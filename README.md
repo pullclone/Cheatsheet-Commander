@@ -15,3 +15,5 @@ Because it's a single file, it runs entirely locally in your web browser. There'
 *   **Bookmark Friendly:** Save it once, open it in your browser, and bookmark it for instant access.
 *   **Fast & Lightweight:** Loads instantly with zero dependencies.
 *   **Clean, Themed UI:** A modern, responsive design that's easy on the eyes and simple to navigate.
+  
+Cheatsheet Commander © 2025 by Ethan Kelley (@pullclone) is licensed under CC BY-NC-ND 4.0
