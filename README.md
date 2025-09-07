@@ -6,6 +6,7 @@ Because it's a single file, it runs entirely locally in your web browser. There'
 1.  Save the HTML file to your computer (e.g., `cheatsheet.html`).
 2.  Open the file directly in your favorite web browser.
 3.  Bookmark it for one-click access anytime!
+4.  (optional) add a png file named commander.png to the same folder for a custom icon!
 
 ### Key Features
 
