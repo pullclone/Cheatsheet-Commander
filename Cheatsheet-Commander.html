@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <link href="commander.png" rel="icon" type="image/png"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Cheatsheet Commander</title>
+  <style>
+   :root {
+      --purple: #6c63ff;
+      --parted-red: #a32d2a;
+      --proquest-blue: #0f757b;
+      --git-dark: #0969da;
+      --tan: #f9d094;
+      --homebrew-brown: #b58221;
+      --unix-blue: #55a7cc;
+      --debian-pink: #e10856;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f8f9fa;
+      color: #343a40;
+      margin: 0;
+      padding: 2rem;
+    }
+    .tabs-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 3rem;
+    }
+    .tab-button {
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #e9ecef;
+      color: #495057;
+      transition: all 0.2s ease-in-out;
+    }
+    .tab-button:hover {
+      background-color: #dee2e6;
+    }
+    .tab-button.active {
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    .content-section {
+      display: none;
+    }
+    .content-section.active {
+      display: block;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .section {
+      display: flex;
+      flex-direction: column;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 1.75rem 1.5rem 1rem 1.5rem;
+      position: relative;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 6px;
+      border-radius: 12px 0 0 12px;
+      background: linear-gradient(180deg, var(--accent-gradient-light), var(--accent-gradient-mid-light) 60%);
+    }
+    .card-header {
+      position: absolute;
+      top: -1.1rem;
+      left: 1rem;
+      background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-mid), var(--accent-gradient-end));
+      color: #fff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .card code {
+      display: block;
+      background: var(--accent-light);
+      padding: 0.4rem 0.6rem;
+      margin: 0.4rem 0;
+      border-radius: 6px;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #212529;
+      word-break: break-word;
+    }
+    .card p {
+      margin: 0 0 1rem 0;
+      padding-left: 0.2rem;
+      font-size: 0.9rem;
+      color: #495057;
+    }
+    /* Default (Pacman) Theme */
+    .pacman {
+      --accent-gradient-start: #5a52e0; --accent-gradient-mid: #6c63ff; --accent-gradient-end: #7d75ff;
+      --accent-gradient-light: #e8e7ff; --accent-gradient-mid-light: #dcdcff; --accent-light: #f1f0ff;
+    }
+    /* Parted Theme */
+    .parted {
+      --accent-gradient-start: #8c2623; --accent-gradient-mid: #a32d2a; --accent-gradient-end: #b93330;
+      --accent-gradient-light: #f5e9e9; --accent-gradient-mid-light: #eedede; --accent-light: #f9f2f2;
+    }
+    /* Git Theme */
+    .git {
+      --accent-gradient-start: #0757b9; --accent-gradient-mid: #0969da; --accent-gradient-end: #0b7bfb;
+      --accent-gradient-light: #e2eefb; --accent-gradient-mid-light: #d6e6fa; --accent-light: #eef5ff;
+    }
+    /* Homebrew Theme */
+    .brew {
+      --accent-gradient-start: #a4741e; --accent-gradient-mid: #b58221; --accent-gradient-end: #c59125;
+      --accent-gradient-light: #f9f4ea; --accent-gradient-mid-light: #f5edd9; --accent-light: #fcf8f0;
+    }
+    /* Unix Shell Theme */
+    .unix {
+      --accent-gradient-start: #4b94b7; --accent-gradient-mid: #55a7cc; --accent-gradient-end: #63b8de;
+      --accent-gradient-light: #e4f2f8; --accent-gradient-mid-light: #d9ecf4; --accent-light: #eef7fb;
+    }
+    /* ProQuest Theme */
+    .proquest {
+      --accent-gradient-start: #0d6368; --accent-gradient-mid: #0f757b; --accent-gradient-end: #11878d;
+      --accent-gradient-light: #e2f0f1; --accent-gradient-mid-light: #d5e9ea; --accent-light: #eef8f8;
+    }
+    /* Debian Theme */
+    .debian {
+      --accent-gradient-start: #c8074d; --accent-gradient-mid: #e10856; --accent-gradient-end: #fa095e;
+      --accent-gradient-light: #fbe2ea; --accent-gradient-mid-light: #f8d6e1; --accent-light: #fdedf2;
+    }
+    .tab-button.active {
+        background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
+    }
+    .stacked-cards, .stacked-cards-conditional {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+    /* Special handling for non-standard ProQuest cards */
+    .proquest .operator-grid, .proquest .proquest-table, .proquest .card > p { padding-top: 1rem; }
+    .proquest .card code { color: var(--proquest-blue); font-weight: bold; background-color: var(--accent-light); }
+    .proquest .card a { color: var(--proquest-blue); font-weight: bold; }
+    .proquest .card a:hover { text-decoration: underline; }
+    /* References card styling */
+    .references .card {
+      --accent-gradient-start: #6c757d; --accent-gradient-mid: #858e96; --accent-gradient-end: #9ea8b1;
+      --accent-gradient-light: #f1f3f5; --accent-gradient-mid-light: #e9ecef; --accent-light: #f8f9fa;
+      padding-top: 2rem;
+    }
+    .references ul { padding-left: 1.25rem; margin: 0.25rem 0; list-style-type: '🔹 '; }
+    .references li { margin-bottom: 0.5rem; padding-left: 0.5rem; }
+    .references a { color: #0056b3; font-weight: 500; text-decoration: none; }
+    .references a:hover { text-decoration: underline; }
+
+    @media screen and (max-width: 1024px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      .stacked-cards-conditional { display: contents; }
+    }
+    @media screen and (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script>
+   function switchTab(tabName) {
+      document.querySelectorAll('.tab-button').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.getElementById(tabName + '-tab').classList.add('active');
+    }
+    window.onload = () => switchTab('pacman');
+  </script>
+ </head>
+ <body>
+  <div class="tabs-container">
+   <button class="tab-button pacman active" id="pacman-tab" onclick="switchTab('pacman')">Pacman</button>
+   <button class="tab-button parted" id="parted-tab" onclick="switchTab('parted')">Parted</button>
+   <button class="tab-button git" id="git-tab" onclick="switchTab('git')">Git</button>
+   <button class="tab-button brew" id="brew-tab" onclick="switchTab('brew')">Homebrew</button>
+   <button class="tab-button unix" id="unix-tab" onclick="switchTab('unix')">Unix Shell</button>
+   <button class="tab-button proquest" id="proquest-tab" onclick="switchTab('proquest')">ProQuest</button>
+   <button class="tab-button debian" id="debian-tab" onclick="switchTab('debian')">Debian</button>
+  </div>
+
+  <div class="content-section pacman active" id="pacman">
+   <div class="grid">
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🌀 Synchronizing & Updating</div>
+      <code>sudo pacman -Sy</code><p>Synchronize package databases.</p>
+      <code>sudo pacman -Syu</code><p>Full system update: sync and upgrade all packages.</p>
+      <code>sudo pacman -Syyu</code><p>Force-refresh databases and perform full upgrade.</p>
+      <code>sudo pacman -Syuw</code><p>Download packages for upgrade without installing.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">📦 Installing Packages</div>
+      <code>sudo pacman -S &lt;pkg&gt;</code><p>Install a single package.</p>
+      <code>sudo pacman -S &lt;pkg1&gt; &lt;pkg2&gt;</code><p>Install multiple packages.</p>
+      <code>sudo pacman -S --needed &lt;pkg&gt;</code><p>Only install if not already up to date.</p>
+      <code>sudo pacman -U &lt;file.pkg.tar.zst&gt;</code><p>Install package from a local file.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🧹 Removing Packages</div>
+      <code>sudo pacman -R &lt;pkg&gt;</code><p>Remove package only.</p>
+      <code>sudo pacman -Rs &lt;pkg&gt;</code><p>Remove package and unneeded dependencies.</p>
+      <code>sudo pacman -Rsc &lt;pkg&gt;</code><p>Remove package and anything depending on it.</p>
+      <code>sudo pacman -Rdd &lt;pkg&gt;</code><p>Remove package ignoring dependencies.</p>
+      <code>sudo pacman -Rns &lt;pkg&gt;</code><p>Remove package, orphaned deps, and config files.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🔍 Querying Package Info</div>
+      <code>pacman -Ss &lt;term&gt;</code><p>Search in repositories.</p>
+      <code>pacman -Qs &lt;term&gt;</code><p>Search among installed packages.</p>
+      <code>pacman -Qi &lt;pkg&gt;</code><p>Info about installed package.</p>
+      <code>pacman -Si &lt;pkg&gt;</code><p>Info from repos about package.</p>
+      <code>pacman -Ql &lt;pkg&gt;</code><p>List files from a package.</p>
+      <code>pacman -Qo &lt;file&gt;</code><p>Find which package owns a file.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🧰 System Maintenance</div>
+      <code>sudo pacman -Sc</code><p>Clear uninstalled package cache.</p>
+      <code>sudo pacman -Scc</code><p>Clear full package cache.</p>
+      <code>pactree &lt;pkg&gt;</code><p>Show dependency tree.</p>
+      <code>pacman -Qdt</code><p>List orphaned packages.</p>
+      <code>sudo pacman -Rns $(pacman -Qdtq)</code><p>Remove all orphaned packages.</p>
+     </div>
+    </div>
+    <div class="section references">
+     <div class="card">
+      <div class="card-header">📚 References</div>
+      <ul>
+       <li><a href="https://wiki.archlinux.org/title/pacman">Pacman Wiki</a> – Arch Linux documentation.</li>
+       <li><a href="https://wiki.archlinux.org/title/Pacman/Tips_and_tricks">Pacman Tips</a> – Tricks and advanced usage.</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="content-section parted" id="parted">
+   <div class="grid">
+    <div class="stacked-cards">
+     <div class="section">
+      <div class="card">
+       <div class="card-header">📂 Basic Commands</div>
+       <code>parted [device]</code><p>Start parted on the specified device.</p>
+       <code>help [command]</code><p>Display help for parted or a specific command.</p>
+       <code>quit</code><p>Exit the parted interface.</p>
+      </div>
+     </div>
+     <div class="section">
+      <div class="card">
+       <div class="card-header">🧾 Disk Label Management</div>
+       <code>mklabel [label-type]</code><p>Create a new partition table. Types: msdos, gpt, bsd, etc.</p>
+      </div>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🔎 Disk Information</div>
+      <code>print</code><p>Display partition table of the selected device.</p>
+      <code>print devices</code><p>List all detected storage devices.</p>
+      <code>print free</code><p>Show free space on disk.</p>
+      <code>unit [compact|s|MB|GiB]</code><p>Set display units for size values.</p>
+      <code>select [device]</code><p>Select a device to operate on.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🛠️ Partition Management</div>
+      <code>mkpart [part-type name fs-type] start end</code><p>Create a new partition.</p>
+      <code>rm [number]</code><p>Remove a partition by number.</p>
+      <code>name [number] [label]</code><p>Assign a name to a partition.</p>
+      <code>resizepart [number] end</code><p>Resize a partition to a new end point.</p>
+      <code>move [number] start end</code><p>Move a partition to a new location.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">⚙️ Advanced Operations</div>
+      <code>check [number]</code><p>Check filesystem integrity on a partition.</p>
+      <code>cp [src-dev] src-num [dest-dev] dest-num</code><p>Copy one partition to another.</p>
+      <code>mkfs [number] fs-type</code><p>Create a filesystem on a partition.</p>
+      <code>set [number] flag state</code><p>Enable or disable flags like boot, lvm, etc.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">💾 File Utilities</div>
+      <code>df -h</code><p>Show disk usage (human-readable).</p>
+      <code>du -sh [directory]</code><p>Summarize directory usage.</p>
+      <code>mount [device] [mountpoint]</code><p>Mount a filesystem.</p>
+      <code>lsblk</code><p>List all block devices.</p>
+      <code>fsck [device]</code><p>Check and repair filesystem errors.</p>
+      <code>mkfs.ext4 [device]</code><p>Format a partition as ext4.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">💡 Workflow Example</div>
+      <code>mklabel gpt</code><p>new GPT partition table</p>
+      <code>unit GiB</code><p>set size units (MiB, GiB, %)</p>
+      <code>mkpart primary ext4 1 50</code><p>make partition (1-50 GiB)</p>
+      <code>name 1 data; name 2 hot</code><p>label multiple partitions</p>
+      <code>print</code><p>verify layout</p>
+      <code>mkfs.ext4 /dev/sdX1</code><p>format filesystem</p>
+      <code>mount /dev/sdX1 /mnt/data</code><p>mount for use</p>
+      <code>df -h</code><p>confirm space</p>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="content-section git" id="git">
+   <div class="grid">
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🟢 Basics</div>
+      <code>git init</code><p>Initialize a new repository.</p>
+      <code>git clone &lt;url&gt;</code><p>Clone a repository from a URL.</p>
+      <code>git status</code><p>Show status of working directory and staging area.</p>
+      <code>git help &lt;command&gt;</code><p>Show help for a command.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">📄 Working with Changes</div>
+      <code>git add &lt;file&gt;</code><p>Stage a file for commit.</p>
+      <code>git add .</code><p>Stage all changes in current directory.</p>
+      <code>git commit -m "msg"</code><p>Commit staged changes with message.</p>
+      <code>git restore &lt;file&gt;</code><p>Discard changes in working directory.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🌿 Branching & Merging</div>
+      <code>git branch</code><p>List branches.</p>
+      <code>git branch &lt;name&gt;</code><p>Create new branch.</p>
+      <code>git checkout &lt;name&gt;</code><p>Switch to branch.</p>
+      <code>git merge &lt;branch&gt;</code><p>Merge branch into current branch.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🎯 Rebasing & Cherry-picking</div>
+      <code>git rebase &lt;base&gt;</code><p>Reapply commits on top of another base branch.</p>
+      <code>git rebase -i &lt;commit&gt;</code><p>Interactive rebase for editing commits.</p>
+      <code>git cherry-pick &lt;commit&gt;</code><p>Apply a specific commit to current branch.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">📦 Stashing & Caching</div>
+      <code>git stash</code><p>Save changes for later, clean working dir.</p>
+      <code>git stash pop</code><p>Reapply last stash and remove it from stash list.</p>
+      <code>git config --global credential.helper cache</code><p>Cache Git credentials in memory temporarily.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🔍 Viewing History</div>
+      <code>git log</code><p>Show commit history.</p>
+      <code>git log --oneline --graph</code><p>Compact commit history with branch graph.</p>
+      <code>git diff</code><p>Show unstaged changes.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🔗 Remote Repositories</div>
+      <code>git remote -v</code><p>List remotes.</p>
+      <code>git remote add origin &lt;url&gt;</code><p>Add remote repository.</p>
+      <code>git push origin &lt;branch&gt;</code><p>Push branch to remote.</p>
+      <code>git pull</code><p>Fetch and merge changes from remote.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🧹 Maintenance & Cleanup</div>
+      <code>git gc</code><p>Clean unnecessary files and optimize repo.</p>
+      <code>git prune</code><p>Remove unreachable objects from repo.</p>
+      <code>git fsck</code><p>Verify integrity of repo.</p>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="content-section brew" id="brew">
+   <div class="grid">
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🌀 Core Commands</div>
+      <code>brew update</code><p>Update Homebrew and formula definitions.</p>
+      <code>brew upgrade</code><p>Upgrade all outdated installed packages.</p>
+      <code>brew outdated</code><p>List all installed packages that have updates.</p>
+      <code>brew doctor</code><p>Check your system for potential problems.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">📦 Installing Packages</div>
+      <code>brew install &lt;formula&gt;</code><p>Install a command-line tool.</p>
+      <code>brew install --cask &lt;cask&gt;</code><p>Install a GUI application.</p>
+      <code>brew install &lt;formula1&gt; &lt;formula2&gt;</code><p>Install multiple packages at once.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🧹 Removing & Cleaning</div>
+      <code>brew uninstall &lt;formula&gt;</code><p>Remove a package.</p>
+      <code>brew autoremove</code><p>Uninstall unused dependencies.</p>
+      <code>brew cleanup</code><p>Remove old versions and stale lockfiles.</p>
+      <code>brew cleanup -s</code><p>Scrub cache, including downloads for packages.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🔍 Searching & Info</div>
+      <code>brew search &lt;text&gt;</code><p>Search for available formulae and casks.</p>
+      <code>brew info &lt;formula&gt;</code><p>Display information about a package.</p>
+      <code>brew list</code><p>List all installed packages.</p>
+      <code>brew deps &lt;formula&gt;</code><p>Show a package's dependencies.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🧰 Service Management</div>
+      <code>brew services list</code><p>List all running services managed by Homebrew.</p>
+      <code>brew services start &lt;service&gt;</code><p>Start a service and register it to launch at login.</p>
+      <code>brew services stop &lt;service&gt;</code><p>Stop a service and unregister it.</p>
+      <code>brew services restart &lt;service&gt;</code><p>Stop and then start a service.</p>
+     </div>
+    </div>
+    <div class="section references">
+      <div class="card">
+        <div class="card-header">📚 References</div>
+        <ul>
+            <li><a href="https://brew.sh/">Homebrew</a> – The official website.</li>
+            <li><a href="https://docs.brew.sh/">Homebrew Docs</a> – Official documentation.</li>
+        </ul>
+      </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="content-section unix" id="unix">
+   <div class="grid">
+    <div class="section">
+     <div class="card">
+      <div class="card-header">📂 File Operations</div>
+      <code>mv</code><p>Move or rename files/directories.</p>
+      <code>cp</code><p>Copy files/directories (-r recursive, -p preserve attributes).</p>
+      <code>rm</code><p>Remove files/directories (-r recursive, -f force).</p>
+      <code>ln -s</code><p>Create symbolic link.</p>
+      <code>touch</code><p>Create empty file or update timestamp.</p>
+      <code>cat</code><p>Show file contents.</p>
+      <code>less</code><p>View file contents (pageable).</p>
+      <code>head -n</code><p>Show first N lines.</p>
+      <code>tail -n</code><p>Show last N lines (-f follow).</p>
+      <code>grep</code><p>Search text (-i ignore case, -r recursive).</p>
+      <code>diff -u</code><p>Compare files (unified format).</p>
+      <code>file</code><p>Identify file type.</p>
+     </div>
+    </div>
+    <div class="stacked-cards">
+     <div class="section">
+      <div class="card">
+       <div class="card-header">📦 Compression & Archiving</div>
+       <code>tar -czf</code><p>Create gzip archive.</p>
+       <code>tar -xzf</code><p>Extract gzip archive.</p>
+       <code>zip -r</code><p>Create zip.</p>
+       <code>unzip</code><p>Extract zip.</p>
+       <code>gzip -d</code><p>Decompress gzip.</p>
+       <code>xz -d</code><p>Decompress xz.</p>
+      </div>
+     </div>
+     <div class="section">
+      <div class="card">
+       <div class="card-header">🔍 Searching</div>
+       <code>find . -name</code><p>Search by name.</p>
+       <code>locate</code><p>Find files quickly (DB-backed).</p>
+       <code>which</code><p>Locate command.</p>
+       <code>whereis</code><p>Locate binary, source, man page.</p>
+      </div>
+     </div>
+    </div>
+    <div class="stacked-cards-conditional">
+     <div class="section">
+      <div class="card">
+       <div class="card-header">📁 Directory Operations</div>
+       <code>mkdir -p</code><p>Create directory (with parents).</p>
+       <code>rmdir</code><p>Remove empty directory.</p>
+       <code>cd</code><p>Change directory.</p>
+       <code>pwd</code><p>Print working directory.</p>
+       <code>ls -lha</code><p>List directory contents (long, human-readable, hidden).</p>
+       <code>tree -L</code><p>Show directory tree (limit depth).</p>
+      </div>
+     </div>
+     <div class="section">
+      <div class="card">
+       <div class="card-header">🔐 Permissions & Ownership</div>
+       <code>chmod -R</code><p>Change file permissions recursively.</p>
+       <code>chown -R</code><p>Change owner.</p>
+       <code>chgrp -R</code><p>Change group.</p>
+       <code>umask</code><p>Show/set default permissions.</p>
+      </div>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🌐 Networking</div>
+      <code>ping -c</code><p>Test connectivity.</p>
+      <code>ip addr</code><p>Show IP addresses.</p>
+      <code>ss -tuln</code><p>Show listening ports.</p>
+      <code>curl -O</code><p>Download file.</p>
+      <code>wget -r</code><p>Recursive download.</p>
+      <code>ssh user@host</code><p>Remote shell.</p>
+      <code>scp -r</code><p>Secure copy.</p>
+      <code>rsync -avz</code><p>Sync files.</p>
+     </div>
+    </div>
+    <div class="section">
+      <div class="card">
+        <div class="card-header">📡 Rsync</div>
+        <code>rsync src dest</code><p>Basic copy (local).</p>
+        <code>rsync -av src/ dest/</code><p>Archive mode (preserve, verbose).</p>
+        <code>rsync -az src/ dest/</code><p>Compress during transfer.</p>
+        <code>rsync -P src/ dest/</code><p>Progress + resume partial.</p>
+        <code>rsync --bwlimit=MB src/ dest/</code><p>Limit bandwidth.</p>
+        <code>rsync -av --delete src/ dest/</code><p>Sync, delete extras at dest.</p>
+        <code>rsync -av --dry-run src/ dest/</code><p>Show what would change (safe test).</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="card">
+       <div class="card-header">👤 Users & Groups</div>
+       <code>useradd -m</code><p>Add user.</p>
+       <code>userdel -r</code><p>Remove user.</p>
+       <code>usermod -aG</code><p>Add to group.</p>
+       <code>passwd</code><p>Change password.</p>
+       <code>groupadd / groupdel</code><p>Manage groups.</p>
+       <code>id</code><p>Show IDs.</p>
+       <code>whoami</code><p>Show current user.</p>
+      </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">✂️ Text Processing</div>
+      <code>cut -d -f</code><p>Extract fields.</p>
+      <code>paste</code><p>Merge lines.</p>
+      <code>sort -n</code><p>Numeric sort.</p>
+      <code>uniq -c</code><p>Count duplicates.</p>
+      <code>tr -d</code><p>Delete characters.</p>
+      <code>awk -F</code><p>Pattern scanning.</p>
+      <code>sed -i</code><p>Stream edit in place.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">⚙️ Process Management</div>
+      <code>ps aux</code><p>List processes.</p>
+      <code>top / htop</code><p>Interactive process viewer.</p>
+      <code>kill -9</code><p>Kill by PID.</p>
+      <code>pkill -9</code><p>Kill by name.</p>
+      <code>nice / renice</code><p>Adjust process priority.</p>
+      <code>jobs</code><p>List jobs.</p>
+      <code>fg / bg</code><p>Foreground/background jobs.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">💾 File System Info</div>
+      <code>df -h</code><p>Disk usage (human-readable).</p>
+      <code>du -sh</code><p>Directory usage summary.</p>
+      <code>mount</code><p>Mount filesystem.</p>
+      <code>umount</code><p>Unmount filesystem.</p>
+      <code>fsck</code><p>Check/repair filesystem.</p>
+     </div>
+    </div>
+    <div class="section">
+     <div class="card">
+      <div class="card-header">🖥️ System Info</div>
+      <code>uname -a</code><p>Kernel/system info.</p>
+      <code>uptime</code><p>System uptime.</p>
+      <code>who / w</code><p>Logged-in users.</p>
+      <code>free -h</code><p>Memory usage.</p>
+      <code>systemctl status</code><p>Service status.</p>
+      <code>journalctl -f</code><p>Follow logs.</p>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="content-section proquest" id="proquest">
+   <div class="grid">
+    <div class="section">
+      <div class="card">
+        <div class="card-header">🔍 Boolean Operators</div>
+        <div class="operator-grid" style="padding-top: 1rem;">
+          <div class="operator-block">
+            <div class="operator-header">AND</div><p>Narrows results by requiring all terms. Use to connect distinct ideas.</p>
+            <div class="operator-example"><strong>Example:</strong> <code>"privacy" AND "mental health"</code></div>
+          </div>
+          <div class="operator-block">
+            <div class="operator-header">OR</div><p>Broadens results by allowing any listed terms. Use for synonyms or related phrases.</p>
+            <div class="operator-example"><strong>Example:</strong> <code>"Gen Z" OR "youth"</code></div>
+          </div>
+          <div class="operator-block">
+            <div class="operator-header">NOT</div><p>Excludes specific terms from results. Use to filter out irrelevant contexts.</p>
+            <div class="operator-example"><strong>Example:</strong> <code>"digital rights" NOT copyright</code></div>
+          </div>
+          <div class="operator-block">
+            <div class="operator-header">" " (Quotes)</div><p>Searches for an exact phrase in that word order. Increases precision.</p>
+            <div class="operator-example"><strong>Example:</strong> <code>"digital constitutionalism"</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+     <div class="section">
+       <div class="card">
+         <div class="card-header">🧾 Field Tags</div>
+         <p style="padding-top:1rem;">Target specific fields. Syntax: <code>TAG("term")</code></p>
+         <table class="proquest-table">
+          <thead><tr><th>Field</th><th>Tag</th><th>Example</th></tr></thead>
+          <tbody>
+           <tr><td>Title</td><td><code>TI()</code></td><td><code>TI("digital nostalgia")</code></td></tr>
+           <tr><td>Abstract</td><td><code>AB()</code></td><td><code>AB("ambient surveillance")</code></td></tr>
+           <tr><td>Subject</td><td><code>SU()</code></td><td><code>SU("platform governance")</code></td></tr>
+           <tr><td>Author</td><td><code>AU()</code></td><td><code>AU("Shoshana Zuboff")</code></td></tr>
+          </tbody>
+         </table>
+       </div>
+     </div>
+     <div class="section">
+       <div class="card">
+         <div class="card-header">💡 Power Tips</div>
+         <code>TI("digital rights") AND AB("youth anxiety")</code><p>Use <code>TI()</code> or <code>AB()</code> to narrow noisy results.</p>
+         <code>("digital privacy" OR "data protection")</code><p>Nest synonyms with parentheses for clarity.</p>
+         <code>SU("psychology") AND "online surveillance"</code><p>Filter by discipline with <code>SU()</code>.</p>
+         <code>DT("scholarly journal")</code><p>Ensure peer-review with <code>DT()</code>.</p>
+       </div>
+     </div>
+     <div class="section references">
+       <div class="card">
+        <div class="card-header">🔗 External Link</div>
+        <ul>
+          <li>Go to <a href="https://www.proquest.com/basic" rel="noopener" target="_blank">ProQuest Search</a></li>
+        </ul>
+       </div>
+     </div>
+   </div>
+  </div>
+
+  <div class="content-section debian" id="debian">
+    <div class="grid">
+     <div class="section">
+      <div class="card">
+       <div class="card-header">🌀 Updating & Upgrading</div>
+       <code>sudo apt update</code><p>Refresh package lists.</p>
+       <code>sudo apt upgrade</code><p>Upgrade installed packages.</p>
+       <code>sudo apt full-upgrade</code><p>Upgrade with dependency changes.</p>
+       <code>sudo apt autoremove</code><p>Remove unused packages.</p>
+      </div>
+     </div>
+     <div class="section">
+       <div class="card">
+        <div class="card-header">📦 Installing & Removing</div>
+        <code>sudo apt install pkg</code><p>Install package.</p>
+        <code>sudo apt install --reinstall pkg</code><p>Reinstall package.</p>
+        <code>sudo apt remove pkg</code><p>Remove package.</p>
+        <code>sudo apt purge pkg</code><p>Remove incl. configs.</p>
+       </div>
+     </div>
+     <div class="section">
+      <div class="card">
+       <div class="card-header">🔍 Querying Packages</div>
+       <code>apt search term</code><p>Search repositories.</p>
+       <code>apt show pkg</code><p>Show package info.</p>
+       <code>dpkg -l</code><p>List installed packages.</p>
+       <code>dpkg -S /path</code><p>Find package owning file.</p>
+      </div>
+     </div>
+     <div class="section">
+      <div class="card">
+       <div class="card-header">🧰 System Maintenance</div>
+       <code>sudo dpkg --configure -a</code><p>Fix broken configs.</p>
+       <code>sudo apt -f install</code><p>Fix broken deps.</p>
+       <code>sudo apt clean</code><p>Clear package cache.</p>
+       <code>apt list --upgradable</code><p>List pending upgrades.</p>
+      </div>
+     </div>
+     <div class="section">
+       <div class="card">
+        <div class="card-header">⚙️ Services & Logs</div>
+        <code>systemctl start service</code><p>Start service.</p>
+        <code>systemctl stop service</code><p>Stop service.</p>
+        <code>systemctl enable service</code><p>Enable at boot.</p>
+        <code>journalctl -u service</code><p>Logs for service.</p>
+       </div>
+     </div>
+     <div class="section references">
+       <div class="card">
+         <div class="card-header">📚 References</div>
+         <ul>
+          <li><a href="https://wiki.debian.org/">Debian Wiki</a> – Package Management.</li>
+          <li><a href="https://www.debian.org/releases/trixie/release-notes/">Debian 13 Notes</a></li>
+          <li>man apt, man dpkg</li>
+         </ul>
+       </div>
+     </div>
+    </div>
+   </div>
+ </body>
+</html>
