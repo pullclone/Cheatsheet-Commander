@@ -17,6 +17,7 @@
       --debian-pink: #e10856;
       --tmux-green: #1bb152;
       --editors-indigo: #3949ab;
+      --nixos-blue: #5277c3;
       --ergo-orange: #f57c00;
     }
     body {
@@ -58,6 +59,8 @@
     .content-section.active {
       display: block;
     }
+
+    /* LAYOUT & GRID BLOWOUT FIX */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -66,6 +69,14 @@
       margin: 0 auto;
       align-items: start;
     }
+    /* min-width: 0 guarantees that long text/code cannot stretch the column off-screen */
+    .grid > *,
+    .stacked-cards > *,
+    .stacked-cards-conditional > *,
+    .section, .card {
+      min-width: 0;
+    }
+
     .section {
       display: flex;
       flex-direction: column;
@@ -121,7 +132,7 @@
       position: relative;
     }
     .card.no-copy code {
-      padding-right: 0.6rem; /* Remove the extra right padding if no copy button exists */
+      padding-right: 0.6rem; /* Restores padding balance since there is no button */
     }
     .card code.pre-formatted {
       white-space: pre;
@@ -243,6 +254,10 @@
       --accent-gradient-start: #283593; --accent-gradient-mid: var(--editors-indigo); --accent-gradient-end: #5c6bc0;
       --accent-gradient-light: #e8eaf6; --accent-gradient-mid-light: #c5cae9; --accent-light: #f0f1f8;
     }
+    .nixos {
+      --accent-gradient-start: #3b5a9d; --accent-gradient-mid: var(--nixos-blue); --accent-gradient-end: #7395d9;
+      --accent-gradient-light: #e6edf8; --accent-gradient-mid-light: #cddcf0; --accent-light: #f0f4f9;
+    }
     .ergo {
       --accent-gradient-start: #e65100; --accent-gradient-mid: var(--ergo-orange); --accent-gradient-end: #ffb74d;
       --accent-gradient-light: #fff3e0; --accent-gradient-mid-light: #ffe0b2; --accent-light: #fff8f0;
@@ -287,27 +302,58 @@
       text-decoration: underline;
     }
 
+    .intro-text {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #6c757d;
+      font-style: italic;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
     @media screen and (max-width: 1024px) {
       .grid { grid-template-columns: 1fr 1fr; }
 
       /* Dissolve the conditional 3-col wrappers into the 2-col grid */
       .stacked-cards-conditional { display: contents; }
 
+      /* NixOS Tab Tablet Grid Positioning - MASONRY LAYOUT FIX */
+      /* This completely detaches the left and right columns vertically to eliminate gaps */
+      #nixos .grid {
+        display: block;
+        column-count: 2;
+        column-gap: 1.5rem;
+      }
+      #nixos .stacked-cards {
+        display: inline-flex;
+        width: 100%;
+        margin-bottom: 3rem;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+      }
+
       /* Ergo Tab Tablet Grid Reordering
-         This interleaves the items perfectly into 2 columns.
          Odd numbers = Left Column. Even numbers = Right Column. */
-      .ergo-ak    { order: 1; } /* Left Col Row 1 (Arno & Kate) */
-      .ergo-proj  { order: 2; } /* Right Col Row 1 (Project) */
-      .ergo-phil  { order: 3; } /* Left Col Row 2 (Ergo Philosophy) */
-      .ergo-code  { order: 4; } /* Right Col Row 2 (Code Intel) */
-      .ergo-split { order: 5; } /* Left Col Row 3 (Adv Split) */
-      .ergo-phase { order: 6; } /* Right Col Row 3 (Phased Learning) */
-      .ergo-raw   { order: 7; } /* Spans 2 Cols */
+      .ergo-ak    { order: 1; } /* L1 (Arno & Kate) */
+      .ergo-proj  { order: 2; } /* R1 (Project) */
+      .ergo-phil  { order: 3; } /* L2 (Ergonomic Philosophy) */
+      .ergo-code  { order: 4; } /* R2 (Code Intel) */
+      .ergo-split { order: 5; } /* L3 (Advanced Split) */
+      .ergo-phase { order: 6; } /* R3 (Phased Learning) */
+      .ergo-raw   { order: 7; } /* Bottom */
     }
 
     @media screen and (max-width: 768px) {
       .grid { grid-template-columns: 1fr; }
       .col-span-2 { grid-column: span 1; }
+
+      /* Switch Masonry to 1 column for mobile */
+      #nixos .grid {
+        column-count: 1;
+      }
 
       /* Reset order back to natural DOM top-to-bottom for mobile view */
       .ergo-ak, .ergo-proj, .ergo-phil, .ergo-code, .ergo-split, .ergo-phase, .ergo-raw { order: initial; }
@@ -360,7 +406,7 @@
     }
 
     function initCopyButtons() {
-      // Skips code blocks inside a parent with the "no-copy" class
+      // Skips adding copy buttons inside cards with the 'no-copy' class
       document.querySelectorAll('.card:not(.no-copy) code').forEach(codeBlock => {
         const clone = codeBlock.cloneNode(true);
         const btns = clone.querySelectorAll('.copy-btn');
@@ -395,6 +441,7 @@
    <button class="tab-button debian" id="debian-tab" onclick="switchTab('debian')">Debian</button>
    <button class="tab-button tmux" id="tmux-tab" onclick="switchTab('tmux')">Tmux</button>
    <button class="tab-button editors" id="editors-tab" onclick="switchTab('editors')">Editors</button>
+   <button class="tab-button nixos" id="nixos-tab" onclick="switchTab('nixos')">NixOS</button>
    <button class="tab-button ergo" id="ergo-tab" onclick="switchTab('ergo')">Ergo / GUI</button>
   </div>
 
@@ -884,7 +931,7 @@
        <div class="card">
          <div class="card-header">📚 References</div>
          <ul>
-          <li><a href="https://wiki.debian.org/" target="_blank">Debian Wiki</a> – Package Management.</li>
+          <li><a href="https://wiki.debian.org/" target="_blank">Debian Wiki</a></li>
           <li><a href="https://www.debian.org/releases/trixie/release-notes/" target="_blank">Debian 13 Notes</a></li>
          </ul>
        </div>
@@ -1155,6 +1202,176 @@
    </div>
   </div>
 
+  <!-- NIXOS -->
+  <div class="content-section nixos" id="nixos">
+    <div class="grid">
+      <!-- COLUMN 1 (Conditional Wrapper) -->
+      <div class="stacked-cards-conditional">
+        <div class="stacked-cards nixos-c1">
+          <div class="card">
+            <div class="card-header">🔧 Core System Lifecycle</div>
+            <code>sudo nixos-rebuild switch</code><p>Apply system config immediately</p>
+            <code>sudo nixos-rebuild boot</code><p>Build now, apply on reboot</p>
+            <code>sudo nixos-rebuild test</code><p>Temporary activation (rollback on reboot)</p>
+            <code>sudo nixos-rebuild switch --flake .#hostname</code><p>Flake-based rebuild (modern standard)</p>
+            <code>sudo nixos-rebuild dry-run</code><p>Preview changes without applying</p>
+            <p>👉 If you're using flakes (you are), always prefer:</p>
+            <code>sudo nixos-rebuild switch --flake /path/to/flake#host</code>
+          </div>
+          <div class="card">
+            <div class="card-header">📦 Package Mgmt (Nix CLI)</div>
+            <code>nix search nixpkgs &lt;pkg&gt;</code><p>Search packages</p>
+            <code>nix profile install nixpkgs#pkg</code><p>Install user package (imperative)</p>
+            <code>nix profile remove &lt;pkg&gt;</code><p>Remove user package</p>
+            <code>nix shell nixpkgs#pkg</code><p>Ephemeral shell with package</p>
+            <code>nix run nixpkgs#pkg</code><p>Run package without installing</p>
+            <p>👉 Think of this as your <strong>“temporary / exploratory layer”</strong>, not your system definition.</p>
+          </div>
+          <div class="card">
+            <div class="card-header">🧱 System Packages (Declarative)</div>
+            <p>Edit your config:</p>
+            <code class="pre-formatted">environment.systemPackages = with pkgs; [
+  git
+  vim
+  htop
+];</code>
+            <p>Then apply:</p>
+            <code>sudo nixos-rebuild switch</code>
+            <p>👉 This is your <strong>real package layer</strong> (tracked, reproducible).</p>
+          </div>
+        </div>
+        <div class="stacked-cards nixos-c2">
+          <div class="card">
+            <div class="card-header">❄️ Flake Operations</div>
+            <code>nix flake init</code><p>Initialize flake</p>
+            <code>nix flake update</code><p>Update inputs (lockfile)</p>
+            <code>nix flake check</code><p>Validate flake</p>
+            <code>nix flake show</code><p>Inspect outputs</p>
+            <code>nix build .#target</code><p>Build flake output</p>
+            <code>nix develop</code><p>Enter devshell</p>
+            <p>👉 If <code>flake check</code> returns nothing → it passed (silent success).</p>
+          </div>
+          <div class="card">
+            <div class="card-header">🧪 Dev Environments (Devshell)</div>
+            <code>nix develop</code><p>Enter dev environment</p>
+            <code>exit</code><p>Leave devshell</p>
+            <code>nix develop .#name</code><p>Use specific devshell</p>
+            <p>Example:</p>
+            <code class="pre-formatted">devShells.default = pkgs.mkShell {
+  buildInputs = [ pkgs.git pkgs.ripgrep ];
+};</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2 (Conditional Wrapper) -->
+      <div class="stacked-cards-conditional">
+        <div class="stacked-cards nixos-c3">
+          <div class="card">
+            <div class="card-header">🧭 Generations & Rollback</div>
+            <code>nixos-rebuild list-generations</code><p>Show system history</p>
+            <code>sudo nixos-rebuild switch --rollback</code><p>Roll back to previous</p>
+            <code>/run/current-system/bin/switch-to-configuration</code><p>Low-level switch</p>
+            <p>👉 NixOS always keeps past system states—this is your safety net.</p>
+          </div>
+          <div class="card">
+            <div class="card-header">🧹 Garbage Collection</div>
+            <code>nix-collect-garbage -d</code><p>Delete old generations</p>
+            <code>sudo nix-collect-garbage -d</code><p>System-wide cleanup</p>
+            <code>nix store optimise</code><p>Deduplicate store</p>
+            <p>👉 Run occasionally to reclaim disk space.</p>
+          </div>
+        </div>
+        <div class="stacked-cards nixos-c4">
+          <div class="card">
+            <div class="card-header">🔐 Flake-Based System (Your Architecture)</div>
+            <p>Your workflow (Nyx-style):</p>
+            <code>sudo nixos-rebuild switch --flake /etc/nixos#nixos-wsl</code>
+            <p>Where:</p>
+            <code class="pre-formatted">/etc/nixos → entrypoint
+~/dev/Nyx → real system definition</code>
+            <p>👉 <code>/etc/nixos</code> = launcher<br>👉 <code>Nyx</code> = source of truth</p>
+          </div>
+          <div class="card">
+            <div class="card-header">🏠 Home Manager (User Layer)</div>
+            <code>home-manager switch --flake .#user</code><p>Apply user config</p>
+            <code>home-manager generations</code><p>List user states</p>
+            <code>home-manager expire-generations "-7 days"</code><p>Clean old configs</p>
+            <p>Example:</p>
+            <code class="pre-formatted">home.packages = with pkgs; [
+  fzf
+  bat
+];</code>
+            <p>👉 Use this for: shell config, user tools, editor setup</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3 (Conditional Wrapper) -->
+      <div class="stacked-cards-conditional">
+        <div class="stacked-cards nixos-c5">
+          <div class="card">
+            <div class="card-header">🔍 Debugging & Inspection</div>
+            <code>nix log &lt;drv&gt;</code><p>View build logs</p>
+            <code>nix path-info -S &lt;pkg&gt;</code><p>Package size</p>
+            <code>nix why-depends &lt;a&gt; &lt;b&gt;</code><p>Why dependency exists</p>
+            <code>nix repl</code><p>Interactive evaluation</p>
+          </div>
+          <div class="card">
+            <div class="card-header">🧬 Configuration Structure (Recommended)</div>
+            <code class="pre-formatted">Nyx/
+├── flake.nix
+├── flake.lock
+├── modules/
+├── profiles/
+├── hosts/
+└── secrets/</code>
+            <p>👉 Keep: system logic → modules, machine specifics → hosts, policies → profiles</p>
+          </div>
+          <div class="card">
+            <div class="card-header">⚠️ Common Pitfalls</div>
+            <code>“flake does not provide attribute…”</code><p>Remove <code>flake-utils</code> wrapping for NixOS configs</p>
+            <code>home-manager: command not found</code><p>Add it to system packages or use <code>nix run</code></p>
+            <code>Nothing happens after flake check</code><p>That means success</p>
+            <code>SSH fails on port 22</code><p>Use <code>ssh.github.com:443</code> override</p>
+          </div>
+        </div>
+        <div class="stacked-cards nixos-c6">
+          <div class="card">
+            <div class="card-header">🧠 Mental Model (Critical)</div>
+            <code>configuration.nix (NixOS)</code><p>System definition</p>
+            <code>flake.nix (Flake)</code><p>Entry + reproducibility</p>
+            <code>Home Manager</code><p>User environment</p>
+            <code>nix profile</code><p>Temporary installs</p>
+            <code>nix shell</code><p>Ephemeral runtime</p>
+            <p>👉 If it must persist → <strong>declare it</strong><br>👉 If it’s experimental → <strong>shell it</strong></p>
+          </div>
+          <div class="card">
+            <div class="card-header">🚀 Minimal Daily Workflow</div>
+            <code class="pre-formatted"># edit config
+nvim ~/dev/Nyx/modules/...
+
+# validate
+nix flake check ~/dev/Nyx
+
+# apply
+sudo nixos-rebuild switch --flake /etc/nixos#nixos-wsl</code>
+          </div>
+          <div class="card references">
+            <div class="card-header">📚 References</div>
+            <ul>
+              <li><a href="https://nixos.org/manual/nixos/stable/" target="_blank">Official Docs</a> – Always canonical.</li>
+              <li><a href="https://nixos.org/manual/nixos/stable/release-notes#sec-release-25.05" target="_blank">NixOS 25.05 Release Notes</a></li>
+              <li><a href="https://nixos.org/manual/nixos/stable/release-notes#sec-release-25.11" target="_blank">NixOS 25.11 Release Notes</a></li>
+              <li><a href="https://nixos.wiki/wiki/Flakes" target="_blank">Flakes RFC / Docs</a></li>
+              <li><a href="https://nixos.wiki/wiki/Home_Manager" target="_blank">Home Manager RFC / Docs</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ERGO / GUI -->
   <div class="content-section ergo" id="ergo">
    <div class="grid">
@@ -1170,7 +1387,7 @@
   kK jJ xX wW -_ ?! mM lL fF pP</code>
           <p>(Bottom character = Base layer; Top character = Shift layer)</p>
         </div>
-        <div class="card">
+        <div class="card no-copy">
           <div class="card-header">🧩 Kate (GUI Optimization)</div>
           <p>Kate is a powerful LSP-enabled editor, but many vital tools are unmapped by default. Bridge standard IDE muscle memory with Kate's architecture by assigning these via Ctrl+Alt+, (Configure Shortcuts).</p>
         </div>
@@ -1197,12 +1414,18 @@
           <code>Git Blame / History</code><p>Map to: Ctrl+Alt+G, B</p>
         </div>
       </div>
-      <div class="section ergo-phil">
+      <div class="stacked-cards ergo-es">
         <div class="card">
           <div class="card-header">⌨️ Ergonomic Philosophy</div>
           <p><strong>Home Row Anchors:</strong> Left hand rests on H I A E, right hand on T R S C. These 8 keys cover ~70% of standard text.</p>
           <p><strong>Centralized Punctuation:</strong> Programming heavyweights ((), ;:, !?) are grouped in the center index-finger columns, eliminating right-pinky overload for coding.</p>
           <p><strong>Editor Navigation:</strong> Standard hjkl navigation will be scattered. Do not remap Vim/Emacs keys. Instead, map your keyboard firmware layers to output Arrow Keys directly on the home row (e.g., holding a thumb key turns T R S C into ← ↓ ↑ →).</p>
+        </div>
+        <div class="card no-copy">
+          <div class="card-header">🪟 Advanced Split & Window</div>
+          <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
+          <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
+          <code>Hide Inactive Views</code><p>Map to: Ctrl+W, O (Matches Vim's :only)</p>
         </div>
       </div>
     </div>
@@ -1218,14 +1441,6 @@
           <code>Show Hover Info</code><p>Map to: Ctrl+K, Ctrl+I (Prevents mouse usage)</p>
           <code>Format Document</code><p>Map to: Ctrl+Shift+I or Ctrl+Alt+L</p>
           <code>Rename Symbol</code><p>Default: F2 (Crucial to remember)</p>
-        </div>
-      </div>
-      <div class="section ergo-split">
-        <div class="card no-copy">
-          <div class="card-header">🪟 Advanced Split & Window</div>
-          <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
-          <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
-          <code>Hide Inactive Views</code><p>Map to: Ctrl+W, O (Matches Vim's :only)</p>
         </div>
       </div>
     </div>
