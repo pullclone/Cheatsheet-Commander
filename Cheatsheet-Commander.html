@@ -291,13 +291,15 @@
       .stacked-cards-conditional { display: contents; }
 
       /* Ergo Tab Tablet Grid Reordering
-         This interleaves the items perfectly into 2 columns. */
-      .ergo-ak    { order: 1; } /* Left Col Row 1 (Arno & Kate Stack) */
-      .ergo-proj  { order: 2; } /* Right Col Row 1 */
-      .ergo-es    { order: 3; } /* Left Col Row 2 (Ergo & Split Stack) */
-      .ergo-code  { order: 4; } /* Right Col Row 2 */
-      .ergo-phase { order: 5; } /* Left Col Row 3 */
-      .ergo-raw   { order: 6; } /* Spans 2 Cols */
+         This interleaves the items perfectly into 2 columns.
+         Odd numbers = Left Column. Even numbers = Right Column. */
+      .ergo-ak    { order: 1; } /* Left Col Row 1 (Arno & Kate) */
+      .ergo-proj  { order: 2; } /* Right Col Row 1 (Project) */
+      .ergo-phil  { order: 3; } /* Left Col Row 2 (Ergo Philosophy) */
+      .ergo-code  { order: 4; } /* Right Col Row 2 (Code Intel) */
+      .ergo-split { order: 5; } /* Left Col Row 3 (Adv Split) */
+      .ergo-phase { order: 6; } /* Right Col Row 3 (Phased Learning) */
+      .ergo-raw   { order: 7; } /* Spans 2 Cols */
     }
 
     @media screen and (max-width: 768px) {
@@ -305,7 +307,7 @@
       .col-span-2 { grid-column: span 1; }
 
       /* Reset order back to natural DOM top-to-bottom for mobile view */
-      .ergo-ak, .ergo-proj, .ergo-es, .ergo-code, .ergo-phase, .ergo-raw { order: initial; }
+      .ergo-ak, .ergo-proj, .ergo-phil, .ergo-code, .ergo-split, .ergo-phase, .ergo-raw { order: initial; }
     }
   </style>
   <script>
@@ -1192,18 +1194,12 @@
           <code>Git Blame / History</code><p>Map to: Ctrl+Alt+G, B</p>
         </div>
       </div>
-      <div class="stacked-cards ergo-es">
+      <div class="section ergo-phil">
         <div class="card">
           <div class="card-header">⌨️ Ergonomic Philosophy</div>
           <p><strong>Home Row Anchors:</strong> Left hand rests on H I A E, right hand on T R S C. These 8 keys cover ~70% of standard text.</p>
           <p><strong>Centralized Punctuation:</strong> Programming heavyweights ((), ;:, !?) are grouped in the center index-finger columns, eliminating right-pinky overload for coding.</p>
           <p><strong>Editor Navigation:</strong> Standard hjkl navigation will be scattered. Do not remap Vim/Emacs keys. Instead, map your keyboard firmware layers to output Arrow Keys directly on the home row (e.g., holding a thumb key turns T R S C into ← ↓ ↑ →).</p>
-        </div>
-        <div class="card">
-          <div class="card-header">🪟 Advanced Split & Window</div>
-          <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
-          <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
-          <code>Hide Inactive Views</code><p>Map to: Ctrl+W, O (Matches Vim's :only)</p>
         </div>
       </div>
     </div>
@@ -1219,6 +1215,14 @@
           <code>Show Hover Info</code><p>Map to: Ctrl+K, Ctrl+I (Prevents mouse usage)</p>
           <code>Format Document</code><p>Map to: Ctrl+Shift+I or Ctrl+Alt+L</p>
           <code>Rename Symbol</code><p>Default: F2 (Crucial to remember)</p>
+        </div>
+      </div>
+      <div class="section ergo-split">
+        <div class="card">
+          <div class="card-header">🪟 Advanced Split & Window</div>
+          <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
+          <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
+          <code>Hide Inactive Views</code><p>Map to: Ctrl+W, O (Matches Vim's :only)</p>
         </div>
       </div>
     </div>
