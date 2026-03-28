@@ -120,6 +120,9 @@
       word-break: break-word;
       position: relative;
     }
+    .card.no-copy code {
+      padding-right: 0.6rem; /* Remove the extra right padding if no copy button exists */
+    }
     .card code.pre-formatted {
       white-space: pre;
       overflow-x: auto;
@@ -357,7 +360,8 @@
     }
 
     function initCopyButtons() {
-      document.querySelectorAll('.card code').forEach(codeBlock => {
+      // Skips code blocks inside a parent with the "no-copy" class
+      document.querySelectorAll('.card:not(.no-copy) code').forEach(codeBlock => {
         const clone = codeBlock.cloneNode(true);
         const btns = clone.querySelectorAll('.copy-btn');
         btns.forEach(b => b.remove());
@@ -882,7 +886,6 @@
          <ul>
           <li><a href="https://wiki.debian.org/" target="_blank">Debian Wiki</a> – Package Management.</li>
           <li><a href="https://www.debian.org/releases/trixie/release-notes/" target="_blank">Debian 13 Notes</a></li>
-          <li>man apt, man dpkg</li>
          </ul>
        </div>
      </div>
@@ -1186,7 +1189,7 @@
     <!-- COLUMN 2 (Desktop 3-col: Dissolves in Tablet 2-col) -->
     <div class="stacked-cards-conditional">
       <div class="section ergo-proj">
-        <div class="card">
+        <div class="card no-copy">
           <div class="card-header">📂 Project & Terminal Workflow</div>
           <code>Find in Files (New Tab)</code><p>Map to: Ctrl+Shift+F (Prevents overriding buffers)</p>
           <code>New Terminal Tab</code><p>Map to: Ctrl+Alt+T</p>
@@ -1207,7 +1210,7 @@
     <!-- COLUMN 3 (Desktop 3-col: Dissolves in Tablet 2-col) -->
     <div class="stacked-cards-conditional">
       <div class="section ergo-code">
-        <div class="card">
+        <div class="card no-copy">
           <div class="card-header">💡 Code Intelligence & LSP</div>
           <code>Go to Declaration</code><p>Map to: F12 (Standard IDE parity)</p>
           <code>Go to Definition</code><p>Map to: Shift+F12</p>
@@ -1218,7 +1221,7 @@
         </div>
       </div>
       <div class="section ergo-split">
-        <div class="card">
+        <div class="card no-copy">
           <div class="card-header">🪟 Advanced Split & Window</div>
           <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
           <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
