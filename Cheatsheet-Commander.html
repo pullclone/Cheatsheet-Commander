@@ -248,6 +248,8 @@
     .tab-button.active {
         background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
     }
+
+    /* CARD STACKING LOGIC */
     .stacked-cards, .stacked-cards-conditional {
       display: flex;
       flex-direction: column;
@@ -284,11 +286,26 @@
 
     @media screen and (max-width: 1024px) {
       .grid { grid-template-columns: 1fr 1fr; }
+
+      /* Dissolve the conditional 3-col wrappers into the 2-col grid */
       .stacked-cards-conditional { display: contents; }
+
+      /* Ergo Tab Tablet Grid Reordering
+         This interleaves the items perfectly into 2 columns. */
+      .ergo-ak    { order: 1; } /* Left Col Row 1 (Arno & Kate Stack) */
+      .ergo-proj  { order: 2; } /* Right Col Row 1 */
+      .ergo-es    { order: 3; } /* Left Col Row 2 (Ergo & Split Stack) */
+      .ergo-code  { order: 4; } /* Right Col Row 2 */
+      .ergo-phase { order: 5; } /* Left Col Row 3 */
+      .ergo-raw   { order: 6; } /* Spans 2 Cols */
     }
+
     @media screen and (max-width: 768px) {
       .grid { grid-template-columns: 1fr; }
       .col-span-2 { grid-column: span 1; }
+
+      /* Reset order back to natural DOM top-to-bottom for mobile view */
+      .ergo-ak, .ergo-proj, .ergo-es, .ergo-code, .ergo-phase, .ergo-raw { order: initial; }
     }
   </style>
   <script>
@@ -1137,9 +1154,9 @@
   <div class="content-section ergo" id="ergo">
    <div class="grid">
 
-    <!-- Column 1: Arno's Map & Kate Optimization (Stacked together as standard cards) -->
-    <div class="stacked-cards">
-      <div class="section">
+    <!-- COLUMN 1 (Desktop 3-col: Dissolves in Tablet 2-col) -->
+    <div class="stacked-cards-conditional">
+      <div class="stacked-cards ergo-ak">
         <div class="card">
           <div class="card-header">🧠 Arno's Engram Map</div>
           <code class="pre-formatted">[{ 1| 2= 3~ 4+ 5&lt; 6&gt; 7^ 8&amp; 9% 0* ]} /\
@@ -1148,18 +1165,12 @@
   kK jJ xX wW -_ ?! mM lL fF pP</code>
           <p>(Bottom character = Base layer; Top character = Shift layer)</p>
         </div>
-      </div>
-      <div class="section">
         <div class="card">
           <div class="card-header">🧩 Kate (GUI Optimization)</div>
           <p>Kate is a powerful LSP-enabled editor, but many vital tools are unmapped by default. Bridge standard IDE muscle memory with Kate's architecture by assigning these via Ctrl+Alt+, (Configure Shortcuts).</p>
         </div>
       </div>
-    </div>
-
-    <!-- Column 2 (Conditional) -->
-    <div class="stacked-cards-conditional">
-      <div class="section">
+      <div class="section ergo-phase">
         <div class="card">
           <div class="card-header">🎯 Phased Learning Strategy</div>
           <p><strong>Phase 1 (Days 1-3):</strong> Lock the home row (HIAE / TRSCZ). Practice rolling inward.</p>
@@ -1168,7 +1179,11 @@
           <p><strong>Phase 4 (Days 15+):</strong> Shadow-type your code without outputting characters to build structural memory. Expect a temporary productivity dip before rapid acceleration.</p>
         </div>
       </div>
-      <div class="section">
+    </div>
+
+    <!-- COLUMN 2 (Desktop 3-col: Dissolves in Tablet 2-col) -->
+    <div class="stacked-cards-conditional">
+      <div class="section ergo-proj">
         <div class="card">
           <div class="card-header">📂 Project & Terminal Workflow</div>
           <code>Find in Files (New Tab)</code><p>Map to: Ctrl+Shift+F (Prevents overriding buffers)</p>
@@ -1177,19 +1192,25 @@
           <code>Git Blame / History</code><p>Map to: Ctrl+Alt+G, B</p>
         </div>
       </div>
-      <div class="section">
+      <div class="stacked-cards ergo-es">
         <div class="card">
           <div class="card-header">⌨️ Ergonomic Philosophy</div>
           <p><strong>Home Row Anchors:</strong> Left hand rests on H I A E, right hand on T R S C. These 8 keys cover ~70% of standard text.</p>
           <p><strong>Centralized Punctuation:</strong> Programming heavyweights ((), ;:, !?) are grouped in the center index-finger columns, eliminating right-pinky overload for coding.</p>
           <p><strong>Editor Navigation:</strong> Standard hjkl navigation will be scattered. Do not remap Vim/Emacs keys. Instead, map your keyboard firmware layers to output Arrow Keys directly on the home row (e.g., holding a thumb key turns T R S C into ← ↓ ↑ →).</p>
         </div>
+        <div class="card">
+          <div class="card-header">🪟 Advanced Split & Window</div>
+          <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
+          <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
+          <code>Hide Inactive Views</code><p>Map to: Ctrl+W, O (Matches Vim's :only)</p>
+        </div>
       </div>
     </div>
 
-    <!-- Column 3 (Conditional) -->
+    <!-- COLUMN 3 (Desktop 3-col: Dissolves in Tablet 2-col) -->
     <div class="stacked-cards-conditional">
-      <div class="section">
+      <div class="section ergo-code">
         <div class="card">
           <div class="card-header">💡 Code Intelligence & LSP</div>
           <code>Go to Declaration</code><p>Map to: F12 (Standard IDE parity)</p>
@@ -1200,18 +1221,10 @@
           <code>Rename Symbol</code><p>Default: F2 (Crucial to remember)</p>
         </div>
       </div>
-      <div class="section">
-        <div class="card">
-          <div class="card-header">🪟 Advanced Split & Window</div>
-          <code>Move Doc to New Split</code><p>Map to: Ctrl+W, Shift+H/V (Vim-style routing)</p>
-          <code>Move Splitter (Resize)</code><p>Map to: Ctrl+Alt+Arrows</p>
-          <code>Hide Inactive Views</code><p>Map to: Ctrl+W, O (Matches Vim's :only)</p>
-        </div>
-      </div>
     </div>
 
     <!-- DOUBLE WIDTH CARD (Spans 2 columns, placed at bottom outside of stacks) -->
-    <div class="section col-span-2">
+    <div class="section col-span-2 ergo-raw">
       <div class="card">
         <div class="card-header">🗜️ Raw Keybind Reference</div>
         <p class="note">Use this block when feeding editor states/commands into LLMs to save context window.</p>
