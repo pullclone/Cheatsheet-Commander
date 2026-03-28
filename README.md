@@ -1,20 +1,47 @@
-**Cheatsheet Commander** is a sleek, all-in-one command-line reference designed for speed and convenience. This self-contained HTML file acts as a fast, offline-first cheatsheet for a variety of essential tools, including Git, Pacman, Parted, and the Unix Shell.
+# Cheatsheet Commander
 
-Because it's a single file, it runs entirely locally in your web browser. There's no server, no installation, and no internet connection required. Just save it, open it, and bookmark it for instant access to the commands you need, right when you need them. Its clean, themed, and responsive interface makes finding information effortless, whether you're on a desktop or a tablet.
+**Cheatsheet Commander** is a sleek, all-in-one command-line reference designed for speed and convenience. This self-contained HTML file acts as a fast, offline-first cheatsheet for essential tools like Git, Pacman, Parted, and the Unix shell.
 
-**How to use:**
-1.  Save the HTML file to your computer (e.g., `cheatsheet.html`).
-2.  Open the file directly in your favorite web browser.
-3.  Bookmark it for one-click access anytime!
-4.  (optional) add a png file named commander.png to the same folder for a custom icon!
+![Cheatsheet Commander Screenshot](cc-screen-capture.png)
 
-### Key Features
+Because it's a single file, it runs entirely locally in your web browser—no server, no installation, and no internet connection required. Just save it, open it, and bookmark it for instant access to the commands you need, right when you need them.
 
-*   **All-in-One Reference:** A comprehensive cheatsheet for essential command-line tools.
-*   **Works Offline:** No internet connection needed. Perfect for travel or network outages.
-*   **Runs Locally:** Just a single HTML file—no installation or servers required.
-*   **Bookmark Friendly:** Save it once, open it in your browser, and bookmark it for instant access.
-*   **Fast & Lightweight:** Loads instantly with zero dependencies.
-*   **Clean, Themed UI:** A modern, responsive design that's easy on the eyes and simple to navigate.
-  
-Cheatsheet Commander © 2025 by Ethan Kelley (@pullclone) is licensed under CC BY-NC-ND 4.0
+---
+
+## 🚀 Quick Start
+
+1. Save the HTML file to your computer (e.g., `cheatsheet.html`).
+2. Open the file in your preferred web browser.
+3. Bookmark it for one-click access.
+4. *(Optional)* Add a `commander.png` file to the same folder for a custom icon.
+
+---
+
+## ✨ Features
+
+* **All-in-One Reference** — Covers essential command-line tools in one place.
+* **Offline-First** — Works without an internet connection.
+* **Zero Setup** — No installation, servers, or dependencies.
+* **Instant Access** — Opens locally and loads immediately.
+* **Clean UI** — Modern, responsive, and easy to navigate.
+
+---
+
+## 📌 Use Cases
+
+* Quick lookup for frequently used commands
+* Offline environments or restricted networks
+* System recovery or live USB usage
+* Learning and reinforcement of CLI workflows
+
+---
+
+## 🧠 Philosophy
+
+Cheatsheet Commander is built around **speed, locality, and reliability**. By eliminating dependencies and external calls, it ensures that your reference material is always available, predictable, and fast.
+
+---
+
+## 📜 License
+
+Cheatsheet Commander © 2025 by Ethan Kelley (@pullclone) is licensed under **CC BY-NC-ND 4.0**.
