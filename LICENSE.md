@@ -1,5 +1,28 @@
-[Cheatsheet Commander](https://github.com/pullclone/Cheatsheet-Commander) © 2025 by [Ethan Kelley (@pullclone)](https://github.com/pullclone) is licensed under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
-<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" height="12">
-<img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" height="12">
-<img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" height="12">
-<img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" height="12">
+Apache License
+Version 2.0, January 2004
+https://www.apache.org/licenses/
+
+Copyright 2025 Ethan P. Kelley
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+---
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+   (full Apache 2.0 text continues…)
+
+[NOTE: Include the FULL official Apache 2.0 license text here.
+You can copy it directly from:
+https://www.apache.org/licenses/LICENSE-2.0.txt]
