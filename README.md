@@ -41,7 +41,17 @@ Because it's a single file, it runs entirely locally in your web browser—no se
 Cheatsheet Commander is built around **speed, locality, and reliability**. By eliminating dependencies and external calls, it ensures that your reference material is always available, predictable, and fast.
 
 ---
-
 ## 📜 License
 
-Cheatsheet Commander © 2025 by Ethan Kelley (@pullclone) is licensed under **CC BY-NC-ND 4.0**.
+Cheatsheet Commander © 2025 Ethan Kelley (@pullclone) is licensed under the Apache License, Version 2.0.
+
+This means you are free to use, modify, distribute, and build upon this project—even in commercial environments—provided that you include the appropriate license and attribution.
+
+See the LICENSE file for full details.
+
+---
+
+### 🔄 License Transition Note
+
+Versions prior to this release were licensed under CC BY-NC-ND 4.0.  
+As of this version, Cheatsheet Commander is released under Apache 2.0 to support broader use, modification, and integration.
