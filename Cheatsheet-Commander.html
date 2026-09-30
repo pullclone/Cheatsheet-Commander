@@ -390,10 +390,11 @@
     .toolbar input { flex: 1; min-width: 150px; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: var(--surface); color: var(--text); }
     .toolbar input::placeholder { color: var(--intro); opacity: 1; }
     .toolbar button, dialog button { padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
-    .toolbar .theme-toggle { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem; min-height: 44px; box-sizing: border-box; border-radius: 999px; background: var(--control-background); }
-    .theme-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; color: var(--muted); font-size: 1.3rem; line-height: 1; transition: background-color 0.2s, color 0.2s; }
+    .toolbar .theme-toggle, .toolbar .icon-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.25rem; min-height: 44px; box-sizing: border-box; border-radius: 999px; background: var(--control-background); }
+    .toolbar .icon-button { width: 44px; }
+    .toolbar .icon-button:hover { background: var(--control-hover); }
+    .theme-icon, .toolbar-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; color: var(--muted); font-size: 1.3rem; line-height: 1; transition: background-color 0.2s, color 0.2s; }
     :root[data-theme="light"] .theme-light, :root[data-theme="dark"] .theme-dark { background: var(--text); color: var(--surface); }
-    .toolbar button:disabled { opacity: 0.5; cursor: default; }
     .search-status { display: block; margin-top: 0.5rem; color: var(--muted); }
     .page-title { text-align: center; margin: 0 0 0.5rem; }
     .card p code { display: inline; padding: 0.1rem 0.25rem; border-radius: 3px; background: var(--code-background, var(--accent-light)); overflow-wrap: anywhere; }
@@ -533,7 +534,6 @@
         ? (counts[current] || 0) + ' matching cards on this page; ' + total + ' across all pages. Choose a tab to see its matches.'
         : 'Search commands, shortcuts, and descriptions across all pages. Press / to search.';
       document.getElementById('empty-state').hidden = !query || Boolean(counts[current]);
-      document.getElementById('clear-search').disabled = !query;
       scheduleLayout();
     }
 
@@ -643,7 +643,6 @@
         card, text: card.textContent.toLowerCase(), panelId: card.closest('.content-section').id
       }));
       document.getElementById('search').addEventListener('input', updateSearch);
-      document.getElementById('clear-search').addEventListener('click', clearSearch);
       document.getElementById('print-page').addEventListener('click', () => window.print());
       document.addEventListener('keydown', event => {
         const editing = event.target.matches('input, textarea, select, [contenteditable]');
@@ -676,8 +675,15 @@
    <div class="toolbar">
     <label for="search">Search all pages</label>
     <input id="search" type="search" placeholder="Try: rollback, rsync, copy…" autocomplete="off" aria-describedby="search-status"/>
-    <button id="clear-search" type="button">Clear</button>
-    <button id="print-page" type="button">Print page</button>
+    <button id="print-page" class="icon-button" type="button" aria-label="Print page" title="Print page">
+     <span class="toolbar-icon" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+       <path d="M7 8V3h10v5M7 17H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-3"/>
+       <rect x="7" y="13" width="10" height="8" rx="1"/>
+       <path d="M17 11h1"/>
+      </svg>
+     </span>
+    </button>
     <button id="theme-toggle" class="theme-toggle" type="button" role="switch" aria-checked="true" aria-label="Dark theme" title="Switch to light theme">
      <span class="theme-icon theme-light" aria-hidden="true">☀︎</span>
      <span class="theme-icon theme-dark" aria-hidden="true">☾</span>
