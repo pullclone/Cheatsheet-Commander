@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
  <head>
   <link href="commander.png" rel="icon" type="image/png"/>
   <meta charset="utf-8"/>
@@ -7,19 +7,21 @@
   <meta name="description" content="An offline command and shortcut reference for Git, Linux, package managers, editors, tmux, and NixOS."/>
   <title>Cheatsheet Commander</title>
   <script>
-    // Apply the saved or system theme before the first paint, including offline use.
-    let themePreference = 'system';
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    // Restore an explicit choice before the first paint; otherwise start in dark mode.
+    let themePreference = 'dark';
     try {
       const savedTheme = localStorage.getItem('commander-theme');
-      if (['system', 'light', 'dark'].includes(savedTheme)) themePreference = savedTheme;
-    } catch { /* Keep the system preference when storage is unavailable. */ }
+      if (['light', 'dark'].includes(savedTheme)) themePreference = savedTheme;
+    } catch { /* Keep dark mode when storage is unavailable. */ }
     function applyTheme() {
-      document.documentElement.dataset.theme = themePreference === 'system'
-        ? (systemTheme.matches ? 'dark' : 'light') : themePreference;
+      document.documentElement.dataset.theme = themePreference;
+      const toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        toggle.setAttribute('aria-checked', String(themePreference === 'dark'));
+        toggle.title = themePreference === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+      }
     }
     applyTheme();
-    systemTheme.addEventListener('change', applyTheme);
   </script>
   <style>
    :root {
@@ -278,10 +280,6 @@
       --accent-gradient-start: #48647c; --accent-gradient-mid: #527087; --accent-gradient-end: #55748a;
       --accent-gradient-light: #ced8e2; --accent-gradient-mid-light: #b4c4d4; --accent-light: #e4e8ed;
     }
-    .ergo {
-      --accent-gradient-start: #8a532e; --accent-gradient-mid: #9a6037; --accent-gradient-end: #9e6239;
-      --accent-gradient-light: #edd5b9; --accent-gradient-mid-light: #dfbe97; --accent-light: #f6e6d4;
-    }
 
     /* Dark palette: soft section accents with individually tinted charcoal code blocks. */
     :root[data-theme="dark"] .pacman {
@@ -319,10 +317,6 @@
     :root[data-theme="dark"] .nixos {
       --accent-gradient-start: #95a9c6; --accent-gradient-mid: #a8bbd4; --accent-gradient-end: #b9cbe0;
       --accent-gradient-light: #40506a; --accent-gradient-mid-light: #53698a; --accent-light: #2a303a;
-    }
-    :root[data-theme="dark"] .ergo {
-      --accent-gradient-start: #c79d75; --accent-gradient-mid: #dbb08a; --accent-gradient-end: #e4bf9e;
-      --accent-gradient-light: #5f4832; --accent-gradient-mid-light: #7c5e42; --accent-light: #372e25;
     }
 
     .tab-button.active {
@@ -393,10 +387,12 @@
     .app-header h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.2rem); }
     .app-header p { margin: 0.5rem 0; line-height: 1.6; }
     .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
-    .theme-picker { display: flex; align-items: center; gap: 0.75rem; }
     .toolbar input { flex: 1; min-width: 150px; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: var(--surface); color: var(--text); }
     .toolbar input::placeholder { color: var(--intro); opacity: 1; }
-    .toolbar button, .toolbar select, dialog button { padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+    .toolbar button, dialog button { padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+    .toolbar .theme-toggle { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem; min-height: 44px; box-sizing: border-box; border-radius: 999px; background: var(--control-background); }
+    .theme-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; color: var(--muted); font-size: 1.3rem; line-height: 1; transition: background-color 0.2s, color 0.2s; }
+    :root[data-theme="light"] .theme-light, :root[data-theme="dark"] .theme-dark { background: var(--text); color: var(--surface); }
     .toolbar button:disabled { opacity: 0.5; cursor: default; }
     .search-status { display: block; margin-top: 0.5rem; color: var(--muted); }
     .page-title { text-align: center; margin: 0 0 0.5rem; }
@@ -614,10 +610,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const themeSelect = document.getElementById('theme');
-      themeSelect.value = themePreference;
-      themeSelect.addEventListener('change', () => {
-        themePreference = themeSelect.value;
+      applyTheme();
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        themePreference = themePreference === 'dark' ? 'light' : 'dark';
         try { localStorage.setItem('commander-theme', themePreference); } catch { /* Theme still works for this visit. */ }
         applyTheme();
       });
@@ -683,14 +678,10 @@
     <input id="search" type="search" placeholder="Try: rollback, rsync, copy…" autocomplete="off" aria-describedby="search-status"/>
     <button id="clear-search" type="button">Clear</button>
     <button id="print-page" type="button">Print page</button>
-    <div class="theme-picker">
-     <label for="theme">Theme</label>
-     <select id="theme">
-      <option value="system">System</option>
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-     </select>
-    </div>
+    <button id="theme-toggle" class="theme-toggle" type="button" role="switch" aria-checked="true" aria-label="Dark theme" title="Switch to light theme">
+     <span class="theme-icon theme-light" aria-hidden="true">☀︎</span>
+     <span class="theme-icon theme-dark" aria-hidden="true">☾</span>
+    </button>
    </div>
    <span class="search-status" id="search-status" role="status" aria-live="polite"></span>
   </header>
@@ -705,7 +696,6 @@
    <button class="tab-button tmux" id="tmux-tab" onclick="switchTab('tmux')">Tmux</button>
    <button class="tab-button editors" id="editors-tab" onclick="switchTab('editors')">Editors</button>
    <button class="tab-button nixos" id="nixos-tab" onclick="switchTab('nixos')">NixOS</button>
-   <button class="tab-button ergo" id="ergo-tab" onclick="switchTab('ergo')">Ergo / GUI</button>
   </div>
 
   <p id="empty-state" class="empty-state" hidden>No matching cards on this page. Try another tab or clear the search.</p>
@@ -1654,94 +1644,6 @@ quit</code>
 <li><a href="https://nix.dev/manual/nix/stable/command-ref/new-cli/nix" target="_blank" rel="noopener noreferrer">Nix command reference</a></li>
 <li><a href="https://wiki.nixos.org/wiki/Flakes" target="_blank" rel="noopener noreferrer">Official flakes wiki</a></li>
 <li><a href="https://home-manager.dev/manual/stable/" target="_blank" rel="noopener noreferrer">Home Manager manual</a></li>
-</ul>
-
-
-     </div>
-    </div>
-   </div>
-  </div>
-
-  <!-- ERGO / GUI -->
-  <div class="content-section ergo" id="ergo">
-   <h2 class="page-title">Engram & Kate</h2>
-   <p class="intro-text">An Engram-en layout reference and optional Kate mappings. Suggested shortcuts describe a custom setup and must be assigned before use.</p>
-   <div class="grid">
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">🧠 Arno's Engram-en Map</h3>
-      <code class="pre-formatted">[{ 1| 2= 3~ 4+ 5&lt; 6&gt; 7^ 8&amp; 9% 0* ]} /\
-  bB yY oO uU '( ") dD nN gG vV qQ #$ @`
-  hH iI aA eE ,; .: tT rR sS cC zZ
-  kK jJ xX wW -_ ?! mM lL fF pP</code>
-      <p>Engram-en v2025.10.31. Each pair is unshifted, then shifted. Older Engram layouts differ; check your installed variant.</p>
-
-
-     </div>
-    </div>
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">🧩 Kate Setup</h3>
-      <p>Enable the Project, Search &amp; Replace, Terminal Tool View, and LSP Client plugins as needed in Settings → Configure Kate → Plugins.</p><p>LSP actions need a compatible language server installed and configured. Available actions vary by language and server.</p><p>Use Settings → Configure Shortcuts to inspect existing bindings and assign the suggestions below. Check conflicts with editor and desktop shortcuts first.</p>
-
-
-     </div>
-    </div>
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">📂 Suggested Project & Terminal Keys</h3>
-
-      <code>Search in Files → Ctrl+Shift+F</code><p>Suggested mapping for Search &amp; Replace; select its search scope explicitly</p>
-      <code>Terminal Tool View → Ctrl+`</code><p>Suggested terminal toggle; requires the terminal plugin</p>
-      <code>Project Tool View → Ctrl+Alt+P</code><p>Suggested project panel toggle</p>
-      <p>These are personal mapping suggestions, not Kate defaults. Use the action names available in your version.</p>
-     </div>
-    </div>
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">💡 Suggested LSP Keys</h3>
-
-      <code>Go to Definition → F12</code><p>Suggested mapping</p>
-      <code>Go to Declaration → Ctrl+F12</code><p>Suggested mapping if the server supports it</p>
-      <code>Find References → Shift+F12</code><p>Suggested mapping</p>
-      <code>Rename → F2</code><p>Suggested mapping; inspect conflicts first</p>
-      <code>Format → Ctrl+Alt+L</code><p>Suggested mapping; requires a server with formatting support</p>
-
-     </div>
-    </div>
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">🪟 Suggested Split Keys</h3>
-
-      <code>Split Vertical → Ctrl+Alt+V</code><p>Suggested mapping for left/right views</p>
-      <code>Split Horizontal → Ctrl+Alt+H</code><p>Suggested mapping for top/bottom views</p>
-      <code>Close Other Views → Ctrl+Alt+O</code><p>Suggested mapping; inspect prompts and unsaved documents</p>
-      <p>Menu labels and actions vary by Kate version. Verify each mapping in a disposable document before relying on it.</p>
-     </div>
-    </div>
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">⌨️ Layout & Navigation</h3>
-      <p><strong>Home row:</strong> H I A E on the left, T R S C on the right. Punctuation pairs occupy the center columns.</p><p><strong>Navigation options:</strong> Vim letter motions move to different physical positions on Engram. Keep them, remap them, or use a firmware navigation layer that emits arrow keys. Choose the option that works for your keyboard and editor.</p><p><strong>Measure your own use:</strong> Text frequency and comfort depend on language, work, keyboard shape, and habit. This reference does not promise a typing-speed increase.</p>
-
-
-     </div>
-    </div>
-    <div class="section">
-     <div class="card no-copy">
-      <h3 class="card-header">🎯 Practice at Your Own Pace</h3>
-      <p><strong>Start:</strong> practice home-row letters accurately in short sessions.</p><p><strong>Expand:</strong> add top and bottom rows, then punctuation and code symbols.</p><p><strong>Integrate:</strong> test editor shortcuts and terminal keys with the layout active. Keep a familiar layout available for urgent work.</p><p><strong>Review:</strong> track accuracy and comfort before increasing speed. Adapt the practice schedule to your progress.</p>
-
-
-     </div>
-    </div>
-    <div class="section references">
-     <div class="card">
-      <h3 class="card-header">📚 References</h3>
-      <ul>
-<li><a href="https://github.com/binarybottle/engram" target="_blank" rel="noopener noreferrer">Engram layouts and version history</a></li>
-<li><a href="https://docs.kde.org/trunk_kf6/en/kate/kate/" target="_blank" rel="noopener noreferrer">Kate handbook</a></li>
-<li><a href="https://docs.kde.org/trunk_kf6/en/kate/kate/kate-application-plugin-lspclient.html" target="_blank" rel="noopener noreferrer">Kate LSP Client</a></li>
 </ul>
 
 

@@ -1,6 +1,6 @@
 # Cheatsheet Commander
 
-**Cheatsheet Commander** is an offline command and keyboard-shortcut reference in a single HTML file. It covers Pacman, GNU Parted, Git, Homebrew, Unix/Linux shell tools, Debian/APT, tmux, Emacs, Vim/Evil, Micro, nano, NixOS/Nix, Engram-en, and Kate.
+**Cheatsheet Commander** is an offline command and keyboard-shortcut reference in a single HTML file. It covers Pacman, GNU Parted, Git, Homebrew, Unix/Linux shell tools, Debian/APT, tmux, Emacs, Vim/Evil, Micro, nano, and NixOS/Nix.
 
 ![Cheatsheet Commander screenshot](cc-screen-capture.png)
 
@@ -18,7 +18,7 @@ The reference, search, and page navigation work offline. Source links open exter
 - **Search all pages:** search commands, shortcuts, or descriptions. Each tab shows its matching card count. Multiple search words must all occur in a card. Press `/` to focus search and Escape to clear it.
 - **Navigate by keyboard:** focus the selected tab, then use Left/Right, Home, or End. Browser Back and Forward restore previous tabs.
 - **Copy commands:** use the clipboard button beside a command or configuration snippet. Multiline snippets preserve line breaks. If automatic copying is blocked, a dialog offers selected text for manual copying. Keyboard shortcuts are meant to be pressed in their editor, so they have no command-copy button.
-- **Choose a theme:** System follows your device appearance; Light uses pale sepia tones and Dark uses charcoal, each with its own section colors. Your choice is saved in this browser when storage is available.
+- **Choose a theme:** use the sun/moon toggle to switch between pale sepia Light and charcoal Dark, each with its own section colors. Dark is the default. Your choice is saved in this browser when storage is available.
 - **Responsive cards:** cards fill the shortest available column in wider views, and stack in reading order on small screens.
 - **Print:** Print page prints the selected page and any active search filter. Clear search first to print the entire page.
 
