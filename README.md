@@ -22,21 +22,7 @@ The reference, search, and page navigation work offline. Source links open exter
 
 Replace sample arguments such as `<pkg>`, `<branch>`, `host`, and `/dev/sdX` before running commands. The app does not execute commands. Each page identifies relevant platforms, command contexts, or configuration prerequisites. Parted commands run at its prompt unless marked as shell commands; the Unix examples assume a POSIX-style shell. Editor shortcuts describe defaults unless marked as suggested mappings.
 
-## Review and maintenance
-
-See [REVIEW.md](REVIEW.md) for the September 2026 accuracy and utility review, major corrections, source references, and verification scope. Official reference links also appear on every page. Check the installed tool's help when working with an older version or custom keybindings.
-
-For development-only browser checks, install Node.js and Playwright:
-
-```sh
-npm install --no-save --package-lock=false playwright
-npx playwright install chromium
-node tests/browser-review.cjs
-```
-
-The checks cover all ten pages, search, bookmarks/history, keyboard tabs, exact clipboard contents and failure paths, responsive layout, printing, contrast, and reading without JavaScript. They open the local file and do not execute any reference commands.
-
-To use an existing browser, set `CHEATSHEET_BROWSER_PATH` to its executable. `PLAYWRIGHT_MODULE_PATH` can point to an existing Playwright module, and `CHEATSHEET_SCREENSHOT_DIR` optionally saves review images. These are test settings; the HTML has no runtime dependencies.
+Official reference links appear on every page. Check your installed tool's help when working with an older version or custom keybindings.
 
 ## License
 
