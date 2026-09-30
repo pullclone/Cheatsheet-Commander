@@ -24,49 +24,42 @@
   <style>
    :root {
       color-scheme: light;
-      --page-background: #f8f9fa;
-      --surface: #fff;
-      --text: #343a40;
-      --muted: #495057;
-      --intro: #6c757d;
-      --code-text: #212529;
-      --control-background: #e9ecef;
-      --control-hover: #dee2e6;
-      --border: #7a828a;
-      --link: #0056b3;
-      --focus: #0969da;
-      --note-text: #a32d2a;
-      --note-background: #fdf5f5;
-      --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      /* Active Page Colors */
-      --pacman-purple: #5951d6;
-      --parted-red: #a32d2a;
-      --git-blue: #0969da;
-      --brew-brown: #805b17;
-      --unix-cyan: #246783;
-      --proquest-teal: #0f757b;
-      --debian-pink: #c8074d;
-      --tmux-green: #187438;
-      --editors-indigo: #3949ab;
-      --nixos-blue: #4265ac;
-      --ergo-orange: #a64d00;
+      --page-background: #f6f0e5;
+      --surface: #fffaf1;
+      --text: #3c352e;
+      --muted: #60574c;
+      --intro: #716557;
+      --code-text: #3e342b;
+      --control-background: #e9dfcf;
+      --control-hover: #dfd2bd;
+      --border: #897960;
+      --link: #35617b;
+      --focus: #875d35;
+      --note-text: #9f3c2f;
+      --note-background: #fae5dc;
+      --accent-ink: #fffcf7;
+      --success-background: #357346;
+      --success-ink: #fffcf7;
+      --card-shadow: 0 2px 8px rgba(70,52,31,0.09);
     }
     :root[data-theme="dark"] {
       color-scheme: dark;
-      --page-background: #111722;
-      --surface: #1b2432;
-      --text: #edf1f7;
-      --muted: #c2ccda;
-      --intro: #b0bdce;
-      --code-text: #e7edf6;
-      --code-background: #243044;
-      --control-background: #2b3749;
-      --control-hover: #3a4960;
-      --border: #77869a;
-      --link: #8ebdff;
-      --focus: #8ebdff;
-      --note-text: #ffb4af;
-      --note-background: #3b252b;
+      --page-background: #1c1b19;
+      --surface: #272624;
+      --text: #f0eae0;
+      --muted: #cdc4b7;
+      --intro: #b9ad9d;
+      --code-text: #ece3d6;
+      --control-background: #34322f;
+      --control-hover: #44403a;
+      --border: #827664;
+      --link: #d5bc88;
+      --focus: #e4c797;
+      --note-text: #edb1a5;
+      --note-background: #3c2924;
+      --accent-ink: #211e19;
+      --success-background: #bad194;
+      --success-ink: #211e19;
       --card-shadow: 0 2px 10px rgba(0,0,0,0.25);
     }
     body {
@@ -98,7 +91,7 @@
       background-color: var(--control-hover);
     }
     .tab-button.active {
-      color: white;
+      color: var(--accent-ink);
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       transform: translateY(-2px);
     }
@@ -155,7 +148,7 @@
       max-width: 100%;
       box-sizing: border-box;
       background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-mid), var(--accent-gradient-end));
-      color: #fff;
+      color: var(--accent-ink);
       padding: 0.3rem 0.8rem;
       border-radius: 8px;
       font-size: 1rem;
@@ -226,7 +219,7 @@
     .card > code:hover .copy-btn { opacity: 1; background: var(--control-hover); }
     .copy-btn:hover { transform: translateY(-50%) scale(1.15); background: var(--control-hover); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .copy-btn:active { transform: translateY(-50%) scale(0.95); }
-    .copy-btn.success { background-color: #28a745 !important; border-color: #28a745; color: white; opacity: 1; }
+    .copy-btn.success { background-color: var(--success-background) !important; border-color: var(--success-background); color: var(--success-ink); opacity: 1; }
 
     .card p {
       margin: 0 0 1rem 0;
@@ -248,64 +241,110 @@
       margin-top: 0.5rem;
     }
 
-    /* Themes */
+    /* Light palette: muted section colors with warm paper tints. */
     .pacman {
-      --accent-gradient-start: #5146c9; --accent-gradient-mid: var(--pacman-purple); --accent-gradient-end: #665be0;
-      --accent-gradient-light: #e8e7ff; --accent-gradient-mid-light: #dcdcff; --accent-light: #f1f0ff;
+      --accent-gradient-start: #695177; --accent-gradient-mid: #755c84; --accent-gradient-end: #7e658d;
+      --accent-gradient-light: #e0d2df; --accent-gradient-mid-light: #d1bfd4; --accent-light: #eee7ed;
     }
     .parted {
-      --accent-gradient-start: #8c2623; --accent-gradient-mid: var(--parted-red); --accent-gradient-end: #b93330;
-      --accent-gradient-light: #f5e9e9; --accent-gradient-mid-light: #eedede; --accent-light: #f9f2f2;
+      --accent-gradient-start: #903f35; --accent-gradient-mid: #a04c41; --accent-gradient-end: #a9574a;
+      --accent-gradient-light: #e9cec1; --accent-gradient-mid-light: #dbb5a6; --accent-light: #f4e4dc;
     }
     .git {
-      --accent-gradient-start: #0757b9; --accent-gradient-mid: var(--git-blue); --accent-gradient-end: #1262c4;
-      --accent-gradient-light: #e2eefb; --accent-gradient-mid-light: #d6e6fa; --accent-light: #eef5ff;
+      --accent-gradient-start: #3c647f; --accent-gradient-mid: #476f88; --accent-gradient-end: #527891;
+      --accent-gradient-light: #cddde1; --accent-gradient-mid-light: #b4ccd4; --accent-light: #e7eaeb;
     }
     .brew {
-      --accent-gradient-start: #755215; --accent-gradient-mid: var(--brew-brown); --accent-gradient-end: #8a621d;
-      --accent-gradient-light: #f9f4ea; --accent-gradient-mid-light: #f5edd9; --accent-light: #fcf8f0;
+      --accent-gradient-start: #76572e; --accent-gradient-mid: #836339; --accent-gradient-end: #8c6b40;
+      --accent-gradient-light: #e7d7b8; --accent-gradient-mid-light: #d7c29d; --accent-light: #f1e7d4;
     }
     .unix {
-      --accent-gradient-start: #246783; --accent-gradient-mid: var(--unix-cyan); --accent-gradient-end: #2b718f;
-      --accent-gradient-light: #e4f2f8; --accent-gradient-mid-light: #d9ecf4; --accent-light: #eef7fb;
+      --accent-gradient-start: #376862; --accent-gradient-mid: #42756d; --accent-gradient-end: #4c7c73;
+      --accent-gradient-light: #cbded3; --accent-gradient-mid-light: #adc9bd; --accent-light: #e4ebe4;
     }
     .debian {
-      --accent-gradient-start: #b70645; --accent-gradient-mid: var(--debian-pink); --accent-gradient-end: #cd074d;
-      --accent-gradient-light: #fbe2ea; --accent-gradient-mid-light: #f8d6e1; --accent-light: #fdedf2;
+      --accent-gradient-start: #8c455d; --accent-gradient-mid: #9b5168; --accent-gradient-end: #a55d73;
+      --accent-gradient-light: #e9cdd2; --accent-gradient-mid-light: #dbb2be; --accent-light: #f3e2e4;
     }
     .tmux {
-      --accent-gradient-start: #146631; --accent-gradient-mid: var(--tmux-green); --accent-gradient-end: #1c793e;
-      --accent-gradient-light: #e5f9ed; --accent-gradient-mid-light: #d1f4e0; --accent-light: #effdf5;
+      --accent-gradient-start: #536b3d; --accent-gradient-mid: #607849; --accent-gradient-end: #63794c;
+      --accent-gradient-light: #d4ddc1; --accent-gradient-mid-light: #becba6; --accent-light: #e7ebdb;
     }
     .editors {
-      --accent-gradient-start: #283593; --accent-gradient-mid: var(--editors-indigo); --accent-gradient-end: #5c6bc0;
-      --accent-gradient-light: #e8eaf6; --accent-gradient-mid-light: #c5cae9; --accent-light: #f0f1f8;
+      --accent-gradient-start: #53577c; --accent-gradient-mid: #606387; --accent-gradient-end: #6c6e91;
+      --accent-gradient-light: #d5d3e0; --accent-gradient-mid-light: #bfbbd2; --accent-light: #e7e5ed;
     }
     .nixos {
-      --accent-gradient-start: #3b5a9d; --accent-gradient-mid: var(--nixos-blue); --accent-gradient-end: #4f70b4;
-      --accent-gradient-light: #e6edf8; --accent-gradient-mid-light: #cddcf0; --accent-light: #f0f4f9;
+      --accent-gradient-start: #48647c; --accent-gradient-mid: #527087; --accent-gradient-end: #55748a;
+      --accent-gradient-light: #ced8e2; --accent-gradient-mid-light: #b4c4d4; --accent-light: #e4e8ed;
     }
     .ergo {
-      --accent-gradient-start: #8a3f00; --accent-gradient-mid: var(--ergo-orange); --accent-gradient-end: #a64d00;
-      --accent-gradient-light: #fff3e0; --accent-gradient-mid-light: #ffe0b2; --accent-light: #fff8f0;
+      --accent-gradient-start: #8a532e; --accent-gradient-mid: #9a6037; --accent-gradient-end: #9e6239;
+      --accent-gradient-light: #edd5b9; --accent-gradient-mid-light: #dfbe97; --accent-light: #f6e6d4;
+    }
+
+    /* Dark palette: soft section accents with individually tinted charcoal code blocks. */
+    :root[data-theme="dark"] .pacman {
+      --accent-gradient-start: #b19cb7; --accent-gradient-mid: #c1abc8; --accent-gradient-end: #cbb7d0;
+      --accent-gradient-light: #55485a; --accent-gradient-mid-light: #6e5c73; --accent-light: #312b34;
+    }
+    :root[data-theme="dark"] .parted {
+      --accent-gradient-start: #cb9183; --accent-gradient-mid: #dda393; --accent-gradient-end: #e5af9f;
+      --accent-gradient-light: #604138; --accent-gradient-mid-light: #7d5549; --accent-light: #372b27;
+    }
+    :root[data-theme="dark"] .git {
+      --accent-gradient-start: #94adbc; --accent-gradient-mid: #a6bdca; --accent-gradient-end: #b7cbd5;
+      --accent-gradient-light: #3e515b; --accent-gradient-mid-light: #526c79; --accent-light: #283137;
+    }
+    :root[data-theme="dark"] .brew {
+      --accent-gradient-start: #b99c71; --accent-gradient-mid: #cbaf85; --accent-gradient-end: #d7bd95;
+      --accent-gradient-light: #574b35; --accent-gradient-mid-light: #736346; --accent-light: #342f27;
+    }
+    :root[data-theme="dark"] .unix {
+      --accent-gradient-start: #87ada8; --accent-gradient-mid: #9dbfb8; --accent-gradient-end: #b0cec5;
+      --accent-gradient-light: #36534a; --accent-gradient-mid-light: #496e62; --accent-light: #273330;
+    }
+    :root[data-theme="dark"] .debian {
+      --accent-gradient-start: #c58fa3; --accent-gradient-mid: #d7a4b4; --accent-gradient-end: #e2b4c3;
+      --accent-gradient-light: #5d3f4b; --accent-gradient-mid-light: #7a5263; --accent-light: #362a30;
+    }
+    :root[data-theme="dark"] .tmux {
+      --accent-gradient-start: #9dac81; --accent-gradient-mid: #b0bd94; --accent-gradient-end: #bdcaa4;
+      --accent-gradient-light: #485337; --accent-gradient-mid-light: #606e49; --accent-light: #2e3327;
+    }
+    :root[data-theme="dark"] .editors {
+      --accent-gradient-start: #a3a4c2; --accent-gradient-mid: #b5b6d2; --accent-gradient-end: #c4c3dd;
+      --accent-gradient-light: #48495e; --accent-gradient-mid-light: #60617e; --accent-light: #2d2d39;
+    }
+    :root[data-theme="dark"] .nixos {
+      --accent-gradient-start: #95a9c6; --accent-gradient-mid: #a8bbd4; --accent-gradient-end: #b9cbe0;
+      --accent-gradient-light: #40506a; --accent-gradient-mid-light: #53698a; --accent-light: #2a303a;
+    }
+    :root[data-theme="dark"] .ergo {
+      --accent-gradient-start: #c79d75; --accent-gradient-mid: #dbb08a; --accent-gradient-end: #e4bf9e;
+      --accent-gradient-light: #5f4832; --accent-gradient-mid-light: #7c5e42; --accent-light: #372e25;
     }
 
     .tab-button.active {
         background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
     }
 
-    :root[data-theme="dark"] .card::before {
-      background: linear-gradient(180deg, var(--accent-gradient-start), var(--accent-gradient-end));
-    }
-
     /* References Styling */
     .references .card {
-      --accent-gradient-start: #58626b;
-      --accent-gradient-mid: #626b73;
-      --accent-gradient-end: #68727b;
-      --accent-gradient-light: #f1f3f5;
-      --accent-gradient-mid-light: #e9ecef;
-      --accent-light: #f8f9fa;
+      --accent-gradient-start: #655e53;
+      --accent-gradient-mid: #706758;
+      --accent-gradient-end: #7a7060;
+      --accent-gradient-light: #e5dccd;
+      --accent-gradient-mid-light: #d4c7b5;
+      --accent-light: #f0e9dd;
+    }
+    :root[data-theme="dark"] .references .card {
+      --accent-gradient-start: #b2a591;
+      --accent-gradient-mid: #c4b7a3;
+      --accent-gradient-end: #d2c5b0;
+      --accent-gradient-light: #4f493e;
+      --accent-gradient-mid-light: #696152;
+      --accent-light: #302d28;
     }
     .references ul {
       padding-left: 1.25rem;
@@ -356,6 +395,7 @@
     .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
     .theme-picker { display: flex; align-items: center; gap: 0.75rem; }
     .toolbar input { flex: 1; min-width: 150px; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: var(--surface); color: var(--text); }
+    .toolbar input::placeholder { color: var(--intro); opacity: 1; }
     .toolbar button, .toolbar select, dialog button { padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
     .toolbar button:disabled { opacity: 0.5; cursor: default; }
     .search-status { display: block; margin-top: 0.5rem; color: var(--muted); }
