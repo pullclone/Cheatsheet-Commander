@@ -6,8 +6,38 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <meta name="description" content="An offline command and shortcut reference for Git, Linux, package managers, editors, tmux, and NixOS."/>
   <title>Cheatsheet Commander</title>
+  <script>
+    // Apply the saved or system theme before the first paint, including offline use.
+    let themePreference = 'system';
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    try {
+      const savedTheme = localStorage.getItem('commander-theme');
+      if (['system', 'light', 'dark'].includes(savedTheme)) themePreference = savedTheme;
+    } catch { /* Keep the system preference when storage is unavailable. */ }
+    function applyTheme() {
+      document.documentElement.dataset.theme = themePreference === 'system'
+        ? (systemTheme.matches ? 'dark' : 'light') : themePreference;
+    }
+    applyTheme();
+    systemTheme.addEventListener('change', applyTheme);
+  </script>
   <style>
    :root {
+      color-scheme: light;
+      --page-background: #f8f9fa;
+      --surface: #fff;
+      --text: #343a40;
+      --muted: #495057;
+      --intro: #6c757d;
+      --code-text: #212529;
+      --control-background: #e9ecef;
+      --control-hover: #dee2e6;
+      --border: #7a828a;
+      --link: #0056b3;
+      --focus: #0969da;
+      --note-text: #a32d2a;
+      --note-background: #fdf5f5;
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
       /* Active Page Colors */
       --pacman-purple: #5951d6;
       --parted-red: #a32d2a;
@@ -21,10 +51,28 @@
       --nixos-blue: #4265ac;
       --ergo-orange: #a64d00;
     }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --page-background: #111722;
+      --surface: #1b2432;
+      --text: #edf1f7;
+      --muted: #c2ccda;
+      --intro: #b0bdce;
+      --code-text: #e7edf6;
+      --code-background: #243044;
+      --control-background: #2b3749;
+      --control-hover: #3a4960;
+      --border: #77869a;
+      --link: #8ebdff;
+      --focus: #8ebdff;
+      --note-text: #ffb4af;
+      --note-background: #3b252b;
+      --card-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      background-color: #f8f9fa;
-      color: #343a40;
+      background-color: var(--page-background);
+      color: var(--text);
       margin: 0;
       padding: 2rem;
     }
@@ -42,12 +90,12 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      background-color: #e9ecef;
-      color: #495057;
+      background-color: var(--control-background);
+      color: var(--muted);
       transition: all 0.2s ease-in-out;
     }
     .tab-button:hover {
-      background-color: #dee2e6;
+      background-color: var(--control-hover);
     }
     .tab-button.active {
       color: white;
@@ -57,19 +105,25 @@
     html.js .content-section { display: none; }
     html.js .content-section.active { display: block; }
 
-    /* LAYOUT & GRID BLOWOUT FIX */
+    /* CSS owns the breakpoints; JavaScript packs cards into the shortest column. */
     .grid {
+      --columns: 3;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3rem 1.5rem;
+      grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+      gap: 1.5rem;
       max-width: 1200px;
       margin: 0 auto;
       align-items: start;
     }
+    .grid.masonry { display: block; position: relative; height: var(--layout-height); }
+    .grid.masonry > .section {
+      position: absolute;
+      width: var(--card-width);
+      left: var(--card-x);
+      top: var(--card-y);
+    }
     /* min-width: 0 guarantees that long text/code cannot stretch the column off-screen */
     .grid > *,
-    .stacked-cards > *,
-    .stacked-cards-conditional > *,
     .section, .card {
       min-width: 0;
     }
@@ -78,14 +132,11 @@
       display: flex;
       flex-direction: column;
     }
-    .col-span-2 {
-      grid-column: span 2;
-    }
     .card {
-      background: #fff;
+      background: var(--surface);
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 1.75rem 1.5rem 1rem 1.5rem;
+      box-shadow: var(--card-shadow);
+      padding: 1.25rem 1.25rem 1rem;
       position: relative;
     }
     .card::before {
@@ -99,9 +150,10 @@
       background: linear-gradient(180deg, var(--accent-gradient-light), var(--accent-gradient-mid-light) 60%);
     }
     .card-header {
-      position: absolute;
-      top: -1.1rem;
-      left: 1rem;
+      position: relative;
+      margin: 0 0 1rem;
+      max-width: 100%;
+      box-sizing: border-box;
       background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-mid), var(--accent-gradient-end));
       color: #fff;
       padding: 0.3rem 0.8rem;
@@ -118,13 +170,13 @@
     /* CODE BLOCKS & COPY BUTTON */
     .card > code {
       display: block;
-      background: var(--accent-light);
+      background: var(--code-background, var(--accent-light));
       padding: 0.4rem 2.5rem 0.4rem 0.6rem;
       margin: 0.4rem 0;
       border-radius: 6px;
       font-family: 'Fira Code', 'Courier New', monospace;
       font-size: 0.9rem;
-      color: #212529;
+      color: var(--code-text);
       overflow-wrap: anywhere;
       position: relative;
     }
@@ -146,8 +198,9 @@
       top: 50%;
       right: 0.4rem;
       transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid rgba(0,0,0,0.1);
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 5px;
       cursor: pointer;
       width: 26px;
@@ -170,8 +223,8 @@
       transform: scale(0.95);
     }
 
-    .card > code:hover .copy-btn { opacity: 1; background: #fff; }
-    .copy-btn:hover { transform: translateY(-50%) scale(1.15); background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card > code:hover .copy-btn { opacity: 1; background: var(--control-hover); }
+    .copy-btn:hover { transform: translateY(-50%) scale(1.15); background: var(--control-hover); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .copy-btn:active { transform: translateY(-50%) scale(0.95); }
     .copy-btn.success { background-color: #28a745 !important; border-color: #28a745; color: white; opacity: 1; }
 
@@ -179,19 +232,19 @@
       margin: 0 0 1rem 0;
       padding-left: 0.2rem;
       font-size: 0.9rem;
-      color: #495057;
+      color: var(--muted);
       line-height: 1.5;
     }
     .card p strong {
-      color: #343a40;
+      color: var(--text);
     }
     .card p.note {
       font-weight: 500;
-      color: #a32d2a;
-      background: #fdf5f5;
+      color: var(--note-text);
+      background: var(--note-background);
       padding: 0.5rem;
       border-radius: 6px;
-      border-left: 3px solid #a32d2a;
+      border-left: 3px solid var(--note-text);
       margin-top: 0.5rem;
     }
 
@@ -241,11 +294,8 @@
         background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
     }
 
-    /* CARD STACKING LOGIC */
-    .stacked-cards, .stacked-cards-conditional {
-      display: flex;
-      flex-direction: column;
-      gap: 3rem;
+    :root[data-theme="dark"] .card::before {
+      background: linear-gradient(180deg, var(--accent-gradient-start), var(--accent-gradient-end));
     }
 
     /* References Styling */
@@ -256,7 +306,6 @@
       --accent-gradient-light: #f1f3f5;
       --accent-gradient-mid-light: #e9ecef;
       --accent-light: #f8f9fa;
-      padding-top: 2rem;
     }
     .references ul {
       padding-left: 1.25rem;
@@ -268,7 +317,7 @@
       padding-left: 0.5rem;
     }
     .references a {
-      color: #0056b3;
+      color: var(--link);
       font-weight: 500;
       text-decoration: none;
     }
@@ -279,7 +328,7 @@
     .intro-text {
       text-align: center;
       margin-bottom: 2.5rem;
-      color: #6c757d;
+      color: var(--intro);
       font-style: normal;
       max-width: 800px;
       margin-left: auto;
@@ -288,16 +337,12 @@
     }
 
     @media screen and (max-width: 1024px) {
-      .grid { grid-template-columns: 1fr 1fr; }
-
-      /* Dissolve the conditional 3-col wrappers into the 2-col grid */
-      .stacked-cards-conditional { display: contents; }
+      .grid { --columns: 2; }
 
     }
 
     @media screen and (max-width: 768px) {
-      .grid { grid-template-columns: 1fr; }
-      .col-span-2 { grid-column: span 1; }
+      .grid { --columns: 1; }
 
       body { padding: 1rem; }
       .tabs-container { gap: 0.5rem; margin-bottom: 2rem; }
@@ -309,36 +354,38 @@
     .app-header h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.2rem); }
     .app-header p { margin: 0.5rem 0; line-height: 1.6; }
     .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
-    .toolbar input { flex: 1; min-width: 150px; padding: 0.7rem; border: 1px solid #7a828a; border-radius: 8px; font: inherit; }
-    .toolbar button, dialog button { padding: 0.6rem 0.8rem; border: 1px solid #7a828a; border-radius: 8px; background: white; font: inherit; cursor: pointer; }
-    .search-status { display: block; margin-top: 0.5rem; color: #495057; }
+    .theme-picker { display: flex; align-items: center; gap: 0.75rem; }
+    .toolbar input { flex: 1; min-width: 150px; padding: 0.7rem; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: var(--surface); color: var(--text); }
+    .toolbar button, .toolbar select, dialog button { padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+    .toolbar button:disabled { opacity: 0.5; cursor: default; }
+    .search-status { display: block; margin-top: 0.5rem; color: var(--muted); }
     .page-title { text-align: center; margin: 0 0 0.5rem; }
-    .card-header { margin: 0; max-width: calc(100% - 3.6rem); position: relative; top: auto; left: auto; margin-top: -2.85rem; margin-bottom: 1rem; }
-    .card p code { display: inline; padding: 0.1rem 0.25rem; border-radius: 3px; background: var(--accent-light); overflow-wrap: anywhere; }
-    .tab-button:focus-visible, .content-section:focus-visible, button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px solid #0969da; outline-offset: 3px; }
+    .card p code { display: inline; padding: 0.1rem 0.25rem; border-radius: 3px; background: var(--code-background, var(--accent-light)); overflow-wrap: anywhere; }
+    .tab-button:focus-visible, .content-section:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
     .copy-btn:focus-visible { opacity: 1; }
     .tab-count { font-size: 0.8em; margin-left: 0.35rem; }
     .empty-state { text-align: center; padding: 2rem 1rem; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-    dialog { width: min(90vw, 650px); box-sizing: border-box; border: 1px solid #7a828a; border-radius: 12px; }
+    dialog { width: min(90vw, 650px); box-sizing: border-box; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); }
     dialog::backdrop { background: rgba(0,0,0,0.4); }
-    dialog textarea { box-sizing: border-box; width: 100%; min-height: 140px; font-family: monospace; margin-bottom: 1rem; }
+    dialog textarea { box-sizing: border-box; width: 100%; min-height: 140px; font-family: monospace; margin-bottom: 1rem; background: var(--surface); color: var(--text); }
     html:not(.js) .tabs-container, html:not(.js) .toolbar, html:not(.js) .search-status { display: none; }
     html:not(.js) .content-section { margin-bottom: 4rem; }
     @media screen and (max-width: 768px) {
       .app-header h1 { font-size: 1.5rem; }
       .app-header p, .intro-text { font-size: 0.9rem; }
       .intro-text { margin-bottom: 1.75rem; }
-      .toolbar label { flex-basis: 100%; }
-      .toolbar input { min-width: 100px; }
+      .toolbar label[for="search"] { flex-basis: 100%; }
+      .toolbar input { flex-basis: 100%; min-width: 0; box-sizing: border-box; }
       .search-status { font-size: 0.85rem; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     @media print {
-      body { padding: 0; background: white; }
+      :root[data-theme] { color-scheme: light; --surface: white; --text: black; --muted: #333; --intro: #444; --link: #0056b3; --note-text: #a32d2a; --note-background: #fdf5f5; --code-background: #f3f3f3; }
+      body { padding: 0; background: white; color: black; }
       .app-header, .tabs-container, .toolbar, .copy-btn, .copy-feedback, .empty-state, dialog { display: none !important; }
-      .grid { display: block; }
-      .section, .stacked-cards, .stacked-cards-conditional { display: block; }
+      .grid, .grid.masonry { display: block; height: auto; }
+      .section, .grid.masonry > .section { display: block; position: static; width: auto; }
       .card { margin: 2rem 0; break-inside: avoid; box-shadow: none; border: 1px solid #aaa; }
       .card-header { color: black; background: white; box-shadow: none; }
       .card > code { color: black; background: #f3f3f3; }
@@ -347,6 +394,65 @@
   <script>
     let searchCards = [];
     let copyDialogTrigger = null;
+    let layoutFrame = 0;
+
+    function scheduleLayout() {
+      if (layoutFrame) return;
+      layoutFrame = requestAnimationFrame(() => {
+        layoutFrame = 0;
+        if (window.matchMedia('print').matches) return;
+        const grid = document.querySelector('.content-section.active .grid');
+        if (!grid || !grid.clientWidth) return;
+        const style = getComputedStyle(grid);
+        const columns = Number(style.getPropertyValue('--columns'));
+        // A single column uses ordinary document flow, including hidden-card filtering.
+        if (columns === 1) {
+          grid.classList.remove('masonry');
+          return;
+        }
+        const cards = Array.from(grid.children).filter(section => !section.hidden);
+        const columnGap = parseFloat(style.columnGap);
+        const rowGap = parseFloat(style.rowGap);
+        const width = (grid.clientWidth - columnGap * (columns - 1)) / columns;
+        grid.style.setProperty('--card-width', width + 'px');
+        grid.classList.add('masonry');
+        // Set all widths before measuring wrapped content; retain DOM and focus order.
+        const heights = cards.map(section => section.getBoundingClientRect().height);
+        const bottoms = Array(columns).fill(0);
+        cards.forEach((section, index) => {
+          const column = bottoms.indexOf(Math.min(...bottoms));
+          section.style.setProperty('--card-x', column * (width + columnGap) + 'px');
+          section.style.setProperty('--card-y', bottoms[column] + 'px');
+          bottoms[column] += heights[index] + rowGap;
+        });
+        grid.style.setProperty('--layout-height', Math.max(0, Math.max(...bottoms) - rowGap) + 'px');
+      });
+    }
+
+    function initLayout() {
+      window.addEventListener('resize', scheduleLayout);
+      window.addEventListener('afterprint', scheduleLayout);
+      if ('ResizeObserver' in window) {
+        const widths = new WeakMap();
+        const observer = new ResizeObserver(entries => {
+          let changed = false;
+          entries.forEach(entry => {
+            // Ignore grid height updates made by our own layout routine.
+            if (!entry.target.classList.contains('grid')) {
+              changed = true;
+              return;
+            }
+            const previous = widths.get(entry.target);
+            widths.set(entry.target, entry.contentRect.width);
+            if (previous !== entry.contentRect.width) changed = true;
+          });
+          if (changed) scheduleLayout();
+        });
+        document.querySelectorAll('.grid, .grid > .section').forEach(element => observer.observe(element));
+      }
+      if (document.fonts) document.fonts.ready.then(scheduleLayout);
+      scheduleLayout();
+    }
 
     function activeTab() {
       return document.querySelector('.content-section.active').id;
@@ -378,7 +484,7 @@
         card.hidden = !terms.every(term => text.includes(term));
         counts[panelId] = (counts[panelId] || 0) + Number(!card.hidden);
       });
-      document.querySelectorAll('.section, .stacked-cards, .stacked-cards-conditional').forEach(wrapper => {
+      document.querySelectorAll('.grid > .section').forEach(wrapper => {
         wrapper.hidden = !Array.from(wrapper.querySelectorAll('.card')).some(card => !card.hidden);
       });
       document.querySelectorAll('.tab-button').forEach(tab => {
@@ -392,6 +498,7 @@
         : 'Search commands, shortcuts, and descriptions across all pages. Press / to search.';
       document.getElementById('empty-state').hidden = !query || Boolean(counts[current]);
       document.getElementById('clear-search').disabled = !query;
+      scheduleLayout();
     }
 
     function clearSearch() {
@@ -467,6 +574,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const themeSelect = document.getElementById('theme');
+      themeSelect.value = themePreference;
+      themeSelect.addEventListener('change', () => {
+        themePreference = themeSelect.value;
+        try { localStorage.setItem('commander-theme', themePreference); } catch { /* Theme still works for this visit. */ }
+        applyTheme();
+      });
       const tabs = Array.from(document.querySelectorAll('.tab-button'));
       tabs.forEach(tab => {
         const panelId = tab.id.replace(/-tab$/, '');
@@ -516,6 +630,7 @@
       selectHash();
       initCopyButtons();
       document.documentElement.classList.add('js');
+      initLayout();
     });
   </script>
  </head>
@@ -528,6 +643,14 @@
     <input id="search" type="search" placeholder="Try: rollback, rsync, copy…" autocomplete="off" aria-describedby="search-status"/>
     <button id="clear-search" type="button">Clear</button>
     <button id="print-page" type="button">Print page</button>
+    <div class="theme-picker">
+     <label for="theme">Theme</label>
+     <select id="theme">
+      <option value="system">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+     </select>
+    </div>
    </div>
    <span class="search-status" id="search-status" role="status" aria-live="polite"></span>
   </header>
@@ -891,8 +1014,6 @@ quit</code>
       <code>diff -u a b</code><p>Compare files</p>
      </div>
     </div>
-    <!-- Column 2 -->
-    <div class="stacked-cards">
      <div class="section">
       <div class="card">
        <h3 class="card-header">📦 Compression & Archiving</h3>
@@ -914,9 +1035,6 @@ quit</code>
        <code>whereis cmd</code><p>Binary/source/man</p>
       </div>
      </div>
-    </div>
-    <!-- Column 3 (Conditional) -->
-    <div class="stacked-cards-conditional">
      <div class="section">
       <div class="card">
        <h3 class="card-header">📁 Directory Operations</h3>
@@ -937,7 +1055,6 @@ quit</code>
        <code>umask</code><p>Show the mask removed from permissions when creating files and directories</p>
       </div>
      </div>
-    </div>
     <div class="section">
      <div class="card">
       <h3 class="card-header">🌐 Networking</h3>
@@ -1205,8 +1322,6 @@ quit</code>
    <h2 class="page-title">Editors</h2>
    <p class="intro-text">C / ^ = Ctrl; M / A = Meta/Alt; S = Shift. Space-separated chords are sequential; / separates alternatives. Vim keys assume normal mode unless stated. GUI and terminal mappings can vary.</p>
    <div class="grid">
-    <!-- Column 1 -->
-    <div class="stacked-cards">
       <div class="section">
         <div class="card no-copy">
           <h3 class="card-header">🧭 Movement by Editor</h3>
@@ -1253,10 +1368,7 @@ quit</code>
           <code>C-Space</code><p>Mark start (Emacs)</p>
         </div>
       </div>
-    </div>
 
-    <!-- Column 2 -->
-    <div class="stacked-cards">
       <div class="section">
         <div class="card no-copy">
           <h3 class="card-header">🧬 Emacs (GNU Editor)</h3>
@@ -1317,10 +1429,7 @@ quit</code>
           <code>:q!</code><p>⚠️ Quit and discard unsaved changes</p>
         </div>
       </div>
-    </div>
 
-    <!-- Column 3 (Conditional) -->
-    <div class="stacked-cards-conditional">
       <div class="section">
         <div class="card no-copy">
           <h3 class="card-header">🪶 Micro (Terminal Editor)</h3>
@@ -1368,7 +1477,6 @@ quit</code>
           <code>M-: / M-;</code><p>Start/stop macro recording / Run macro</p>
         </div>
       </div>
-    </div>
     <div class="section references">
      <div class="card">
       <h3 class="card-header">📚 References</h3>
